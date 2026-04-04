@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Web / OpenAPI -->
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+
     <!-- Aspire / hosting -->
     <PackageVersion Include="Aspire.Hosting.Testing" Version="13.2.1" />
 

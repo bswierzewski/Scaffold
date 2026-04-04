@@ -12,7 +12,7 @@ public class Tests
         // Arrange
         var cancellationToken = TestContext.Current.CancellationToken;
 
-        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.starter_AppHost>(cancellationToken);
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Scaffold_AppHost>(cancellationToken);
         appHost.Services.AddLogging(logging =>
         {
             logging.SetMinimumLevel(LogLevel.Debug);

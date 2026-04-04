@@ -12,6 +12,10 @@
   <Folder Name="/src/Aspire/ServiceDefaults/">
     <Project Path="src/Aspire/ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
   </Folder>
+  <Folder Name="/src/Backend/" />
+  <Folder Name="/src/Backend/Host/">
+    <Project Path="src/Backend/Host/Scaffold.Api.csproj" />
+  </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/E2E/">
     <Project Path="tests/E2E/Scaffold.Tests.E2E.csproj" />

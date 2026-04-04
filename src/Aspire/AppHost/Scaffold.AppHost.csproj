@@ -5,4 +5,8 @@
     <UserSecretsId>133f218b-b7a4-4bc6-8a0c-69c24300a991</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Backend\Host\Scaffold.Api.csproj" />
+  </ItemGroup>
+
 </Project>
