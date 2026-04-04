@@ -1,1 +1,19 @@
-<Solution />
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Aspire/" />
+  <Folder Name="/src/Aspire/AppHost/">
+    <Project Path="src/Aspire/AppHost/Scaffold.AppHost.csproj" />
+  </Folder>
+  <Folder Name="/src/Aspire/ServiceDefaults/">
+    <Project Path="src/Aspire/ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/E2E/">
+    <Project Path="tests/E2E/Scaffold.Tests.E2E.csproj" />
+  </Folder>
+</Solution>
