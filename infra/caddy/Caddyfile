@@ -1,0 +1,21 @@
+(common_proxy) {
+    encode zstd gzip
+
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        Referrer-Policy strict-origin-when-cross-origin
+    }
+}
+
+{$DOMAIN} {
+    import common_proxy
+
+    handle /api/* {
+        reverse_proxy {$API_UPSTREAM}
+    }
+
+    handle {
+        reverse_proxy {$FRONTEND_UPSTREAM}
+    }
+}
