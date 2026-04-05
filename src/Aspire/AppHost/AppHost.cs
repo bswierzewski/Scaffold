@@ -1,5 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+builder.AddDockerComposeEnvironment("compose");
+
 var api = builder.AddProject<Projects.Scaffold_Api>("api");
 
 // Add Frontend project (Vite + React)
