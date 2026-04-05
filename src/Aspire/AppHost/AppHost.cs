@@ -2,9 +2,8 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 var api = builder.AddProject<Projects.Scaffold_Api>("api");
 
-var frontend = builder.AddContainer("frontend", "nginx", "alpine")
-    .WithBindMount("../../../src/Frontend/app", "/usr/share/nginx/html", isReadOnly: true)
-    .WithHttpEndpoint(targetPort: 80, name: "http");
+// Add Frontend project (Vite + React)
+var frontend = builder.AddViteApp("frontend", "../../Frontend/app");
 
 // Add Caddy as a Reverse Proxy
 builder.AddContainer("proxy", "caddy", "2.11-alpine")

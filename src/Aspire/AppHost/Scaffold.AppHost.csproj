@@ -9,4 +9,8 @@
     <ProjectReference Include="..\..\Backend\Host\Scaffold.Api.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Aspire.Hosting.JavaScript" />
+  </ItemGroup>
+
 </Project>
