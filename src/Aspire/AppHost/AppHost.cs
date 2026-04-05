@@ -1,24 +1,38 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-builder.AddDockerComposeEnvironment("compose");
+// Add PostgreSQL database
+var postgres = builder.AddPostgres("postgres")
+    .WithImage("postgres", "17-alpine")
+    //.WithDataVolume() // Persist data between restarts
+    .WithPgWeb(); // GUI for managing the database
 
-var api = builder.AddProject<Projects.Scaffold_Api>("api");
+var db = postgres
+    .AddDatabase("scaffold");
+
+// Add API project
+var api = builder.AddProject<Projects.Scaffold_Api>("api")
+    .WaitFor(db)
+    .WithReference(db, connectionName: "Default");
 
 // Add Frontend project (Vite + React)
-var frontend = builder.AddViteApp("frontend", "../../Frontend/app");
+var app = builder.AddViteApp("app", "../../Frontend")
+    .WithReference(api);
 
-// Add Caddy as a Reverse Proxy
+// Add Caddy reverse proxy
 builder.AddContainer("proxy", "caddy", "2.11-alpine")
-    // Mount the Caddyfile configuration
     .WithBindMount("../../../infra/caddy/Caddyfile", "/etc/caddy/Caddyfile", isReadOnly: true)
-    // Mount a persistent volume for certificates to avoid regeneration on restart
     .WithVolume("caddy_data", "/data")
+    .WithVolume("caddy_config", "/config")
     .WithHttpEndpoint(port: 80, targetPort: 80, name: "http")
     .WithHttpsEndpoint(port: 443, targetPort: 443, name: "https")
-    // Pass internal Aspire service addresses to Caddy
     .WithEnvironment("API_UPSTREAM", api.GetEndpoint("http"))
-    .WithEnvironment("FRONTEND_UPSTREAM", frontend.GetEndpoint("http"))
-    // Base domain
-    .WithEnvironment("DOMAIN", "localhost");
+    .WithEnvironment("APP_UPSTREAM", app.GetEndpoint("http"))
+    .WithEnvironment("DOMAIN", "localhost")
+    .WaitFor(api)
+    .WaitFor(app);
+
+// Docker Compose publish target (without Aspire dashboard)
+builder.AddDockerComposeEnvironment("compose")
+    .WithProperties(env => env.DashboardEnabled = false);
 
 builder.Build().Run();
