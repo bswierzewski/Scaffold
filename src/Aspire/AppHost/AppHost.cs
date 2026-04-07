@@ -1,38 +1,29 @@
 var builder = DistributedApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 
-// Add PostgreSQL database
-var postgres = builder.AddPostgres("postgres")
-    .WithImage("postgres", "17-alpine")
+// Add PostgreSQL database container
+var postgres = builder.AddPostgres("postgres", port: 5432)
+    .WithImage("postgres", "18-alpine")
     //.WithDataVolume() // Persist data between restarts
     .WithPgWeb(); // GUI for managing the database
 
-var db = postgres
-    .AddDatabase("scaffold");
+// Add database
+postgres.AddDatabase("scaffold");
 
 // Add API project
 var api = builder.AddProject<Projects.Scaffold_Api>("api")
-    .WaitFor(db)
-    .WithReference(db, connectionName: "Default");
-
+    .WithEnvironmentSection(configuration, "Configuration:Api");
+    
 // Add Frontend project (Vite + React)
-var app = builder.AddViteApp("app", "../../Frontend")
-    .WithReference(api);
+var app = builder.AddViteApp("app", "../../Frontend/app");
 
-// Add Caddy reverse proxy
-builder.AddContainer("proxy", "caddy", "2.11-alpine")
-    .WithBindMount("../../../infra/caddy/Caddyfile", "/etc/caddy/Caddyfile", isReadOnly: true)
-    .WithVolume("caddy_data", "/data")
-    .WithVolume("caddy_config", "/config")
-    .WithHttpEndpoint(port: 80, targetPort: 80, name: "http")
-    .WithHttpsEndpoint(port: 443, targetPort: 443, name: "https")
-    .WithEnvironment("API_UPSTREAM", api.GetEndpoint("http"))
-    .WithEnvironment("APP_UPSTREAM", app.GetEndpoint("http"))
-    .WithEnvironment("DOMAIN", "localhost")
-    .WaitFor(api)
-    .WaitFor(app);
-
-// Docker Compose publish target (without Aspire dashboard)
-builder.AddDockerComposeEnvironment("compose")
-    .WithProperties(env => env.DashboardEnabled = false);
+builder.AddYarp("gateway")
+    .WithHttpsEndpoint()
+    .WithHttpsDeveloperCertificate()
+    .WithConfiguration(yarp =>
+    {
+        yarp.AddRoute("/api/{**catch-all}", api);
+        yarp.AddRoute("/{**catch-all}", app);
+    });
 
 builder.Build().Run();
