@@ -7,19 +7,16 @@ public class Tests
     private static readonly TimeSpan DefaultTimeout = TimeSpan.FromSeconds(30);
 
     [Fact]
-    public async Task GetWebResourceRootReturnsOkStatusCode()
+    public async Task GatewayRootReturnsFrontendHtml()
     {
-        // Arrange
         var cancellationToken = TestContext.Current.CancellationToken;
 
         var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Scaffold_AppHost>(cancellationToken);
         appHost.Services.AddLogging(logging =>
         {
             logging.SetMinimumLevel(LogLevel.Debug);
-            // Override the logging filters from the app's configuration
             logging.AddFilter(appHost.Environment.ApplicationName, LogLevel.Debug);
             logging.AddFilter("Aspire.", LogLevel.Debug);
-            // To output logs to the xUnit.net ITestOutputHelper, consider adding a package from https://www.nuget.org/packages?q=xunit+logging
         });
         appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
         {
@@ -29,12 +26,50 @@ public class Tests
         await using var app = await appHost.BuildAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
         await app.StartAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
 
-        // // Act
-        // var httpClient = app.CreateHttpClient("webfrontend");
-        // await app.ResourceNotifications.WaitForResourceHealthyAsync("webfrontend", cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
-        // var response = await httpClient.GetAsync("/", cancellationToken);
+        await app.ResourceNotifications.WaitForResourceHealthyAsync("app", cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
+        await app.ResourceNotifications.WaitForResourceHealthyAsync("gateway", cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
 
-        // // Assert
-        // Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var httpClient = app.CreateHttpClient("gateway");
+
+        var response = await httpClient.GetAsync("/", cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Contains("<div id=\"root\"></div>", content);
+        Assert.Contains("<title>scaffold</title>", content);
+    }
+
+    [Fact]
+    public async Task GatewayApiRouteReturnsWeatherForecast()
+    {
+        var cancellationToken = TestContext.Current.CancellationToken;
+
+        var appHost = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Scaffold_AppHost>(cancellationToken);
+        appHost.Services.AddLogging(logging =>
+        {
+            logging.SetMinimumLevel(LogLevel.Debug);
+            logging.AddFilter(appHost.Environment.ApplicationName, LogLevel.Debug);
+            logging.AddFilter("Aspire.", LogLevel.Debug);
+        });
+        appHost.Services.ConfigureHttpClientDefaults(clientBuilder =>
+        {
+            clientBuilder.AddStandardResilienceHandler();
+        });
+
+        await using var app = await appHost.BuildAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
+        await app.StartAsync(cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
+
+        await app.ResourceNotifications.WaitForResourceHealthyAsync("api", cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
+        await app.ResourceNotifications.WaitForResourceHealthyAsync("gateway", cancellationToken).WaitAsync(DefaultTimeout, cancellationToken);
+
+        var httpClient = app.CreateHttpClient("gateway");
+
+        var response = await httpClient.GetAsync("/api/weatherforecast", cancellationToken);
+        var content = await response.Content.ReadAsStringAsync(cancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.StartsWith("[", content.TrimStart());
+        Assert.Contains("temperatureC", content);
+        Assert.Contains("date", content);
     }
 }
