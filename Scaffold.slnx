@@ -14,7 +14,7 @@
   </Folder>
   <Folder Name="/src/Backend/" />
   <Folder Name="/src/Backend/Host/">
-    <Project Path="src/Backend/Host/Scaffold.Api.csproj" />
+    <Project Path="src/Backend/Host/Api/Scaffold.Api.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/E2E/">

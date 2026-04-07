@@ -5,7 +5,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Aspire\ServiceDefaults\Scaffold.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\..\Aspire\ServiceDefaults\Scaffold.ServiceDefaults.csproj" />
   </ItemGroup>
 
 </Project>
