@@ -4,6 +4,9 @@ import babel from '@rolldown/plugin-babel'
 
 // https://vite.dev/config/
 export default defineConfig({
+  server: {
+    allowedHosts: ['host.docker.internal']
+  },
   plugins: [
     react(),
     babel({ presets: [reactCompilerPreset()] })
