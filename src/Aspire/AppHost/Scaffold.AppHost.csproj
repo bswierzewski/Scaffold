@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Backend\Host\Scaffold.Api.csproj" />
+    <ProjectReference Include="..\..\Backend\Host\Api\Scaffold.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>
