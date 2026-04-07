@@ -11,8 +11,8 @@ var postgres = builder.AddPostgres("postgres")
 postgres.AddDatabase("scaffold");
 
 // Add API project
-var api = builder.AddProject<Projects.Scaffold_Api>("api")
-    .WithEnvironmentSection(configuration, "Configuration:Api");
+var api = builder.AddProject<Projects.Scaffold_Api>("api");
+    //.WithEnvironmentSection(configuration, "Configuration:Api");
 
 // Add Frontend project (Vite + React)
 var app = builder.AddViteApp("app", "../../Frontend/app");
