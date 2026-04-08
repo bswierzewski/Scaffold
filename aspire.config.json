@@ -1,5 +1,5 @@
 {
   "appHost": {
-    "path": "src/Aspire/AppHost/Scaffold.AppHost.csproj"
+    "path": "src/Aspire/Scaffold.AppHost/Scaffold.AppHost.csproj"
   }
 }

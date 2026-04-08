@@ -4,20 +4,44 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
+  <Folder Name="/openapi/">
+    <File Path="openapi/Scaffold.Api.json" />
+  </Folder>
+  <Folder Name="/scripts/">
+    <File Path="scripts/README.MD" />
+  </Folder>
   <Folder Name="/src/" />
   <Folder Name="/src/Aspire/" />
-  <Folder Name="/src/Aspire/AppHost/">
-    <Project Path="src/Aspire/AppHost/Scaffold.AppHost.csproj" />
+  <Folder Name="/src/Aspire/Scaffold.AppHost/">
+    <Project Path="src/Aspire/Scaffold.AppHost/Scaffold.AppHost.csproj" />
   </Folder>
-  <Folder Name="/src/Aspire/ServiceDefaults/">
-    <Project Path="src/Aspire/ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
+  <Folder Name="/src/Aspire/Scaffold.ServiceDefaults/">
+    <Project Path="src/Aspire/Scaffold.ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/src/Backend/" />
-  <Folder Name="/src/Backend/Host/">
-    <Project Path="src/Backend/Host/Api/Scaffold.Api.csproj" />
+  <Folder Name="/src/Backend/Bootstrappers/">
+    <Project Path="src/Backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj" />
   </Folder>
+  <Folder Name="/src/Backend/Modules/" />
+  <Folder Name="/src/Backend/Modules/Weather/" />
+  <Folder Name="/src/Backend/Modules/Weather/Scaffold.Weather/">
+    <Project Path="src/Backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj" />
+  </Folder>
+  <Folder Name="/src/Backend/Modules/Weather/Scaffold.Weather.Contracts/">
+    <Project Path="src/Backend/Modules/Weather/Scaffold.Weather.Contracts/Scaffold.Weather.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/src/Backend/Shared/" />
+  <Folder Name="/src/Backend/Shared/Scaffold.Core/">
+    <Project Path="src/Backend/Shared/Scaffold.Core/Scaffold.Core.csproj" />
+  </Folder>
+  <Folder Name="/src/Backend/Shared/Scaffold.Infrastructure/">
+    <Project Path="src/Backend/Shared/Scaffold.Infrastructure/Scaffold.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Frontend/" />
   <Folder Name="/tests/" />
-  <Folder Name="/tests/E2E/">
-    <Project Path="tests/E2E/Scaffold.Tests.E2E.csproj" />
+  <Folder Name="/tests/Scaffold.Tests.E2E/">
+    <Project Path="tests/Scaffold.Tests.E2E/Scaffold.Tests.E2E.csproj" />
   </Folder>
+  <Folder Name="/tests/Scaffold.Tests.Integration/" />
+  <Folder Name="/tests/Scaffold.Tests.Unit/" />
 </Solution>
