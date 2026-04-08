@@ -18,7 +18,7 @@ import type {
 } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { customInstance } from ".././axios-instance";
-import type { WeatherForecast } from "../models";
+import type { ProblemDetails, WeatherForecast } from "../models";
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
@@ -38,7 +38,7 @@ export const getGetWeatherForecastQueryKey = () => {
 
 export const getGetWeatherForecastQueryOptions = <
 	TData = Awaited<ReturnType<typeof getWeatherForecast>>,
-	TError = unknown,
+	TError = ProblemDetails,
 >(options?: {
 	query?: Partial<
 		UseQueryOptions<
@@ -67,11 +67,11 @@ export const getGetWeatherForecastQueryOptions = <
 export type GetWeatherForecastQueryResult = NonNullable<
 	Awaited<ReturnType<typeof getWeatherForecast>>
 >;
-export type GetWeatherForecastQueryError = unknown;
+export type GetWeatherForecastQueryError = ProblemDetails;
 
 export function useGetWeatherForecast<
 	TData = Awaited<ReturnType<typeof getWeatherForecast>>,
-	TError = unknown,
+	TError = ProblemDetails,
 >(
 	options: {
 		query: Partial<
@@ -97,7 +97,7 @@ export function useGetWeatherForecast<
 };
 export function useGetWeatherForecast<
 	TData = Awaited<ReturnType<typeof getWeatherForecast>>,
-	TError = unknown,
+	TError = ProblemDetails,
 >(
 	options?: {
 		query?: Partial<
@@ -123,7 +123,7 @@ export function useGetWeatherForecast<
 };
 export function useGetWeatherForecast<
 	TData = Awaited<ReturnType<typeof getWeatherForecast>>,
-	TError = unknown,
+	TError = ProblemDetails,
 >(
 	options?: {
 		query?: Partial<
@@ -142,7 +142,7 @@ export function useGetWeatherForecast<
 
 export function useGetWeatherForecast<
 	TData = Awaited<ReturnType<typeof getWeatherForecast>>,
-	TError = unknown,
+	TError = ProblemDetails,
 >(
 	options?: {
 		query?: Partial<

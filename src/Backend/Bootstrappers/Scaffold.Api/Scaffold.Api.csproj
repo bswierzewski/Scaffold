@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Aspire\Scaffold.ServiceDefaults\Scaffold.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\..\Shared\Scaffold.Infrastructure\Scaffold.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

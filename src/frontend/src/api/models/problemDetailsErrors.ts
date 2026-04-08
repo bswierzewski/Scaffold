@@ -5,6 +5,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export * from "./problemDetails";
-export * from "./problemDetailsErrors";
-export * from "./weatherForecast";
+/**
+ * Validation errors grouped by field name.
+ */
+export type ProblemDetailsErrors = { [key: string]: string[] };

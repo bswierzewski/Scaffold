@@ -3,7 +3,7 @@ import { defineConfig } from "orval";
 export default defineConfig({
 	api: {
 		input: {
-			target: "../../../openapi/Scaffold.Api.json",
+			target: "../../openapi/Scaffold.Api.json",
 		},
 		output: {
 			biome: true,
