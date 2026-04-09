@@ -13,11 +13,11 @@ public static class MigrationExtensions
     /// <summary>
     /// Checks for and applies any pending Entity Framework Core database migrations for the specified DbContext.
     /// </summary>
-    public static async Task MigrateDatabaseAsync<TContext>(this IHost host, CancellationToken cancellationToken = default)
+    public static async Task MigrateDatabaseAsync<TContext>(this IServiceProvider services, CancellationToken cancellationToken = default)
         where TContext : DbContext
     {
-        var scopeFactory = host.Services.GetRequiredService<IServiceScopeFactory>();
-        var logger = host.Services.GetRequiredService<ILogger<TContext>>();
+        var scopeFactory = services.GetRequiredService<IServiceScopeFactory>();
+        var logger = services.GetRequiredService<ILogger<TContext>>();
 
         using var scope = scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
