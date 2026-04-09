@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path="aspire.config.json" />
     <File Path=".gitignore" />
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
@@ -11,37 +12,31 @@
     <File Path="scripts/README.MD" />
   </Folder>
   <Folder Name="/src/" />
-  <Folder Name="/src/Aspire/" />
-  <Folder Name="/src/Aspire/Scaffold.AppHost/">
-    <Project Path="src/Aspire/Scaffold.AppHost/Scaffold.AppHost.csproj" />
+  <Folder Name="/src/aspire/">
+    <Project Path="src/aspire/Scaffold.AppHost/Scaffold.AppHost.csproj" />
+    <Project Path="src/aspire/Scaffold.ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
   </Folder>
-  <Folder Name="/src/Aspire/Scaffold.ServiceDefaults/">
-    <Project Path="src/Aspire/Scaffold.ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
+  <Folder Name="/src/backend/" />
+  <Folder Name="/src/backend/Bootstrappers/">
+    <Project Path="src/backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj" />
   </Folder>
-  <Folder Name="/src/Backend/" />
-  <Folder Name="/src/Backend/Bootstrappers/">
-    <Project Path="src/Backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj" />
+  <Folder Name="/src/backend/Modules/" />
+  <Folder Name="/src/backend/Modules/Weather/">
+    <Project Path="src/backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj" />
+    <Project Path="src/backend/Modules/Weather/Scaffold.Weather.Contracts/Scaffold.Weather.Contracts.csproj" />
   </Folder>
-  <Folder Name="/src/Backend/Modules/" />
-  <Folder Name="/src/Backend/Modules/Weather/" />
-  <Folder Name="/src/Backend/Modules/Weather/Scaffold.Weather/">
-    <Project Path="src/Backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj" />
+  <Folder Name="/src/backend/Shared/">
+    <Project Path="src/backend/Shared/Scaffold.Core/Scaffold.Core.csproj" />
+    <Project Path="src/backend/Shared/Scaffold.Infrastructure/Scaffold.Infrastructure.csproj" />
   </Folder>
-  <Folder Name="/src/Backend/Modules/Weather/Scaffold.Weather.Contracts/">
-    <Project Path="src/Backend/Modules/Weather/Scaffold.Weather.Contracts/Scaffold.Weather.Contracts.csproj" />
-  </Folder>
-  <Folder Name="/src/Backend/Shared/" />
-  <Folder Name="/src/Backend/Shared/Scaffold.Core/">
-    <Project Path="src/Backend/Shared/Scaffold.Core/Scaffold.Core.csproj" />
-  </Folder>
-  <Folder Name="/src/Backend/Shared/Scaffold.Infrastructure/">
-    <Project Path="src/Backend/Shared/Scaffold.Infrastructure/Scaffold.Infrastructure.csproj" />
-  </Folder>
-  <Folder Name="/src/Frontend/" />
   <Folder Name="/tests/" />
   <Folder Name="/tests/Scaffold.Tests.E2E/">
-    <Project Path="tests/Scaffold.Tests.E2E/Scaffold.Tests.E2E.csproj" />
+    <File Path="tests/Scaffold.Tests.E2E/README.MD" />
   </Folder>
-  <Folder Name="/tests/Scaffold.Tests.Integration/" />
-  <Folder Name="/tests/Scaffold.Tests.Unit/" />
+  <Folder Name="/tests/Scaffold.Tests.Integration/">
+    <File Path="tests/Scaffold.Tests.Integration/README.MD" />
+  </Folder>
+  <Folder Name="/tests/Scaffold.Tests.Unit/">
+    <File Path="tests/Scaffold.Tests.Unit/README.MD" />
+  </Folder>
 </Solution>
