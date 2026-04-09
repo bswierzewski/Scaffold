@@ -1,7 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="ErrorOr" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="Serilog.Enrichers.Span" />
+    <PackageReference Include="Serilog.Formatting.Compact" />
+    <PackageReference Include="Serilog.Sinks.Async" />
+    <PackageReference Include="Serilog.Sinks.Console" />
+    <PackageReference Include="Serilog.Sinks.File" />
+    <PackageReference Include="Serilog.Sinks.OpenTelemetry" />
+    <PackageReference Include="WolverineFx" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\Scaffold.Core\Scaffold.Core.csproj" />
   </ItemGroup>
 
 </Project>

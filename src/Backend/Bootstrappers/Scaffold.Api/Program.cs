@@ -1,11 +1,19 @@
+using Scaffold.Infrastructure.Exceptions.Handlers;
 using Scaffold.Infrastructure.Extensions;
+using Scaffold.Infrastructure.Serilog.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Host.UseSerilog(serilog => serilog
+    .AddFile()
+    .AddConsole()
+    .AddOpenTelemetry());
+
 builder.AddServiceDefaults();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails(options => options.AddDiagnosticInformation());
 builder.Services.AddOpenApi(options => options.AddProblemDetailsResponses());
 
@@ -17,6 +25,7 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseExceptionHandler();
 app.MapDefaultEndpoints();
 
 var summaries = new[]
