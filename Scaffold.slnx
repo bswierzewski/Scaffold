@@ -14,7 +14,6 @@
   <Folder Name="/src/" />
   <Folder Name="/src/aspire/">
     <Project Path="src/aspire/Scaffold.AppHost/Scaffold.AppHost.csproj" />
-    <Project Path="src/aspire/Scaffold.ServiceDefaults/Scaffold.ServiceDefaults.csproj" />
   </Folder>
   <Folder Name="/src/backend/" />
   <Folder Name="/src/backend/Bootstrappers/">
@@ -25,9 +24,10 @@
     <Project Path="src/backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj" />
     <Project Path="src/backend/Modules/Weather/Scaffold.Weather.Contracts/Scaffold.Weather.Contracts.csproj" />
   </Folder>
-  <Folder Name="/src/backend/Shared/">
-    <Project Path="src/backend/Shared/Scaffold.Core/Scaffold.Core.csproj" />
-    <Project Path="src/backend/Shared/Scaffold.Infrastructure/Scaffold.Infrastructure.csproj" />
+  <Folder Name="/src/backend/BuildingBlocks/">
+    <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />
+    <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />
+    <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/Scaffold.Tests.E2E/">

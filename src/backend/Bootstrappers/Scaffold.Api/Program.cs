@@ -1,6 +1,7 @@
-using Scaffold.Infrastructure.Exceptions.Handlers;
-using Scaffold.Infrastructure.Extensions;
-using Scaffold.Infrastructure.Serilog.Extensions;
+using BuildingBlocks.Hosting;
+using BuildingBlocks.Infrastructure.Exceptions.Handlers;
+using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Serilog.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
