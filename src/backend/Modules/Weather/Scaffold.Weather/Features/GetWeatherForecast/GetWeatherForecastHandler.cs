@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using Scaffold.Weather.Infrastructure.Persistence;
 using Wolverine.Http;
 
 namespace Scaffold.Weather.Features.GetWeatherForecast;
@@ -5,17 +7,18 @@ namespace Scaffold.Weather.Features.GetWeatherForecast;
 public static class GetWeatherForecastHandler
 {
   [WolverineGet("/api/weatherforecast")]
-  public static GetWeatherForecastResponse[] Handle()
+  public static async Task<GetWeatherForecastResponse[]> Handle(
+      WeatherDbContext dbContext,
+      CancellationToken cancellationToken)
   {
-    string[] summaries = [
-      "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-    ];
-
-    return Enumerable.Range(1, 5)
-        .Select(index => new GetWeatherForecastResponse(
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]))
-        .ToArray();
+    return await dbContext.WeatherForecasts
+        .AsNoTracking()
+        .OrderBy(x => x.Date)
+        .Select(x => new GetWeatherForecastResponse(
+            x.Id,
+            x.Date,
+            x.TemperatureC,
+            x.Summary))
+        .ToArrayAsync(cancellationToken);
   }
 }

@@ -1,6 +1,7 @@
 namespace Scaffold.Weather.Features.GetWeatherForecast;
 
 public record GetWeatherForecastResponse(
+  Guid Id,
   DateOnly Date,
   int TemperatureC,
   string? Summary)

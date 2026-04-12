@@ -28,6 +28,7 @@
     <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />
     <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />
     <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Infrastructure/BuildingBlocks.Infrastructure.csproj" />
+    <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Tests/BuildingBlocks.Tests.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/Scaffold.Tests.E2E/">
