@@ -8,9 +8,11 @@
     "/api/weatherforecast": {
       "get": {
         "tags": [
-          "Scaffold.Api"
+          "Scaffold.Weather.Features.GetWeatherForecast.GetWeatherForecastHandler"
         ],
-        "operationId": "GetWeatherForecast",
+        "summary": "GET_api_weatherforecast",
+        "description": "GET_api_weatherforecast",
+        "operationId": "GET_api_weatherforecast",
         "responses": {
           "200": {
             "description": "OK",
@@ -19,9 +21,65 @@
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/WeatherForecast"
+                    "$ref": "#/components/schemas/GetWeatherForecastResponse"
                   }
                 }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Scaffold.Weather.Features.CreateWeatherForecast.CreateWeatherForecastHandler"
+        ],
+        "summary": "POST_api_weatherforecast",
+        "description": "POST_api_weatherforecast",
+        "operationId": "POST_api_weatherforecast",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWeatherForecastRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWeatherForecastResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { }
               }
             }
           },
@@ -41,6 +99,50 @@
   },
   "components": {
     "schemas": {
+      "CreateWeatherForecastRequest": {
+        "type": "object"
+      },
+      "GetWeatherForecastResponse": {
+        "required": [
+          "id",
+          "date",
+          "temperatureC",
+          "summary"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "temperatureC": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          },
+          "summary": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "temperatureF": {
+            "pattern": "^-?(?:0|[1-9]\\d*)$",
+            "type": [
+              "integer",
+              "string"
+            ],
+            "format": "int32"
+          }
+        }
+      },
       "ProblemDetails": {
         "type": "object",
         "properties": {
@@ -98,48 +200,15 @@
           }
         },
         "description": "RFC 7807 Problem Details for HTTP APIs"
-      },
-      "WeatherForecast": {
-        "required": [
-          "date",
-          "temperatureC",
-          "summary"
-        ],
-        "type": "object",
-        "properties": {
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "temperatureC": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          },
-          "summary": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "temperatureF": {
-            "pattern": "^-?(?:0|[1-9]\\d*)$",
-            "type": [
-              "integer",
-              "string"
-            ],
-            "format": "int32"
-          }
-        }
       }
     }
   },
   "tags": [
     {
-      "name": "Scaffold.Api"
+      "name": "Scaffold.Weather.Features.GetWeatherForecast.GetWeatherForecastHandler"
+    },
+    {
+      "name": "Scaffold.Weather.Features.CreateWeatherForecast.CreateWeatherForecastHandler"
     }
   ]
 }
