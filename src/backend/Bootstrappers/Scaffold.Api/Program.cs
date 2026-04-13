@@ -4,6 +4,7 @@ using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
+using Scaffold.Announcements;
 using Scaffold.Api.Authentication;
 using Scaffold.Weather;
 
@@ -45,6 +46,7 @@ builder.Services.AddScoped<ICurrentUser, DummyUserContext>();
 // Lists application modules explicitly so the bootstrapper can register their services
 // and expose their Wolverine handlers/endpoints.
 IModule[] modules = [
+    new AnnouncementsModule(),
     new WeatherModule()
 ];
 

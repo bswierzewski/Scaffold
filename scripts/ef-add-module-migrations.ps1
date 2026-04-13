@@ -23,6 +23,11 @@ $MigrationsOutputDir = 'Infrastructure/Persistence/Migrations'
 
 $Modules = @(
     [pscustomobject]@{
+        Name = 'Announcements'
+        Context = 'AnnouncementsDbContext'
+        Project = 'src/backend/Modules/Announcements/Scaffold.Announcements/Scaffold.Announcements.csproj'
+    }
+    [pscustomobject]@{
         Name = 'Weather'
         Context = 'WeatherDbContext'
         Project = 'src/backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj'

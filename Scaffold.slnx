@@ -20,6 +20,10 @@
     <Project Path="src/backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj" />
   </Folder>
   <Folder Name="/src/backend/Modules/" />
+  <Folder Name="/src/backend/Modules/Announcements/">
+    <Project Path="src/backend/Modules/Announcements/Scaffold.Announcements/Scaffold.Announcements.csproj" />
+    <Project Path="src/backend/Modules/Announcements/Scaffold.Announcements.Contracts/Scaffold.Announcements.Contracts.csproj" />
+  </Folder>
   <Folder Name="/src/backend/Modules/Weather/">
     <Project Path="src/backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj" />
     <Project Path="src/backend/Modules/Weather/Scaffold.Weather.Contracts/Scaffold.Weather.Contracts.csproj" />

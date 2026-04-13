@@ -6,6 +6,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
     <PackageReference Include="WolverineFx.EntityFrameworkCore" />
     <PackageReference Include="WolverineFx.Http" />
   </ItemGroup>

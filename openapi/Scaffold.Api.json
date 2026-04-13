@@ -5,6 +5,97 @@
     "version": "1.0.0"
   },
   "paths": {
+    "/api/announcements": {
+      "get": {
+        "tags": [
+          "Scaffold.Announcements.Features.GetAnnouncements.GetAnnouncementsHandler"
+        ],
+        "summary": "GET_api_announcements",
+        "description": "GET_api_announcements",
+        "operationId": "GET_api_announcements",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/GetAnnouncementsResponse"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Scaffold.Announcements.Features.CreateAnnouncement.CreateAnnouncementHandler"
+        ],
+        "summary": "POST_api_announcements",
+        "description": "POST_api_announcements",
+        "operationId": "POST_api_announcements",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAnnouncementRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAnnouncementsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "default": {
+            "description": "An error occurred",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/weatherforecast": {
       "get": {
         "tags": [
@@ -99,8 +190,48 @@
   },
   "components": {
     "schemas": {
+      "CreateAnnouncementRequest": {
+        "required": [
+          "title",
+          "content"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      },
       "CreateWeatherForecastRequest": {
         "type": "object"
+      },
+      "GetAnnouncementsResponse": {
+        "required": [
+          "id",
+          "title",
+          "content",
+          "publishedAt"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
       },
       "GetWeatherForecastResponse": {
         "required": [
@@ -204,6 +335,12 @@
     }
   },
   "tags": [
+    {
+      "name": "Scaffold.Announcements.Features.GetAnnouncements.GetAnnouncementsHandler"
+    },
+    {
+      "name": "Scaffold.Announcements.Features.CreateAnnouncement.CreateAnnouncementHandler"
+    },
     {
       "name": "Scaffold.Weather.Features.GetWeatherForecast.GetWeatherForecastHandler"
     },
