@@ -1,5 +1,5 @@
 using BuildingBlocks.Tests.Integration;
-using Microsoft.EntityFrameworkCore;
+using BuildingBlocks.Tests.Integration.Utils;
 using Scaffold.Announcements;
 using Scaffold.Announcements.Infrastructure.Persistence;
 using Scaffold.Weather;
@@ -15,33 +15,7 @@ public sealed class ScaffoldEnvironment : IntegrationTestEnvironment<Program>
 {
   protected override async ValueTask InitializeDatabaseAsync()
   {
-    await MigrateAnnouncementsAsync();
-    await MigrateWeatherAsync();
-  }
-
-  private async Task MigrateAnnouncementsAsync()
-  {
-    var schema = AnnouncementsModule.Name.ToLowerInvariant();
-
-    var options = new DbContextOptionsBuilder<AnnouncementsDbContext>()
-        .UseNpgsql(ConnectionString, np =>
-            np.MigrationsHistoryTable("__EFMigrationsHistory", schema))
-        .Options;
-
-    await using var dbContext = new AnnouncementsDbContext(options);
-    await dbContext.Database.MigrateAsync();
-  }
-
-  private async Task MigrateWeatherAsync()
-  {
-    var schema = WeatherModule.Name.ToLowerInvariant();
-
-    var options = new DbContextOptionsBuilder<WeatherDbContext>()
-        .UseNpgsql(ConnectionString, np =>
-            np.MigrationsHistoryTable("__EFMigrationsHistory", schema))
-        .Options;
-
-    await using var dbContext = new WeatherDbContext(options);
-    await dbContext.Database.MigrateAsync();
+    await IntegrationTestDatabaseUtils.MigrateDatabaseAsync<AnnouncementsDbContext>(ConnectionString, AnnouncementsModule.Name);
+    await IntegrationTestDatabaseUtils.MigrateDatabaseAsync<WeatherDbContext>(ConnectionString, WeatherModule.Name);
   }
 }
