@@ -8,7 +8,7 @@ namespace Scaffold.Api.Authentication;
 /// </summary>
 internal sealed class DummyUserContext : ICurrentUser
 {
-  public Guid Id => Guid.Parse("00000000-0000-0000-0000-000000000001");
+  public string Id => "user_000000000000000000000001";
 
   public IEnumerable<string> Roles => ["User", "Admin"];
 
