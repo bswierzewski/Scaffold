@@ -7,7 +7,7 @@ using Xunit;
 namespace Scaffold.Tests.E2E.Features.Weather;
 
 [Collection(ScaffoldCollection.Name)]
-public sealed class WeatherForecastEndpointTests(ScaffoldEndToEndEnvironment environment, ITestOutputHelper output)
+public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment, ITestOutputHelper output)
     : EndToEndTestBase<Projects.Scaffold_AppHost>(environment)
 {
     [Fact]

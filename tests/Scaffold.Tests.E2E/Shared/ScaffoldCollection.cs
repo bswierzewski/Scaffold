@@ -4,7 +4,7 @@ using Xunit;
 namespace Scaffold.Tests.E2E.Shared;
 
 [CollectionDefinition(Name, DisableParallelization = true)]
-public sealed class ScaffoldCollection : EndToEndTestCollection<ScaffoldEndToEndEnvironment>
+public sealed class ScaffoldCollection : EndToEndTestCollection<ScaffoldEnvironment>
 {
     public const string Name = "Scaffold";
 }

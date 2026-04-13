@@ -7,8 +7,8 @@ using Xunit;
 
 namespace Scaffold.Tests.Integration.Features.Weather;
 
-[Collection(WeatherCollection.Name)]
-public sealed class GetWeatherForecastTests(WeatherEnvironment environment, ITestOutputHelper output)
+[Collection(ScaffoldCollection.Name)]
+public sealed class GetWeatherForecastTests(ScaffoldEnvironment environment, ITestOutputHelper output)
     : IntegrationTestBase<Program>(environment)
 {
     [Fact]

@@ -7,7 +7,7 @@ namespace Scaffold.Tests.E2E.Shared;
 /// <summary>
 /// Shared runtime environment for the full Scaffold Aspire stack used by end-to-end tests.
 /// </summary>
-public sealed class ScaffoldEndToEndEnvironment : EndToEndTestEnvironment<Projects.Scaffold_AppHost>
+public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaffold_AppHost>
 {
     /// <summary>
     /// Uses the gateway as the default HTTPS entry point for end-to-end tests.
