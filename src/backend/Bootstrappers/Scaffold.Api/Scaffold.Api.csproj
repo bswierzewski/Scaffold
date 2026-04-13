@@ -9,9 +9,6 @@
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" PrivateAssets="all" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
-    <PackageReference Include="WolverineFx.EntityFrameworkCore" />
-    <PackageReference Include="WolverineFx.Http.FluentValidation" />
-    <PackageReference Include="WolverineFx.Postgresql" />
   </ItemGroup>
 
   <ItemGroup>
