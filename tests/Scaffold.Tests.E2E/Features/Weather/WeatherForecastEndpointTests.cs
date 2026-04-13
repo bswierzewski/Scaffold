@@ -1,4 +1,5 @@
 using BuildingBlocks.Tests.E2E;
+using BuildingBlocks.Tests.E2E.Extensions;
 using Scaffold.Tests.E2E.Shared;
 using System.Net.Http.Json;
 using Xunit;
@@ -6,7 +7,7 @@ using Xunit;
 namespace Scaffold.Tests.E2E.Features.Weather;
 
 [Collection(ScaffoldCollection.Name)]
-public sealed class WeatherForecastEndpointTests(ScaffoldEndToEndEnvironment environment)
+public sealed class WeatherForecastEndpointTests(ScaffoldEndToEndEnvironment environment, ITestOutputHelper output)
     : EndToEndTestBase<Projects.Scaffold_AppHost>(environment)
 {
     [Fact]
@@ -17,14 +18,16 @@ public sealed class WeatherForecastEndpointTests(ScaffoldEndToEndEnvironment env
         var createResponse = await httpClient.PostAsJsonAsync(
             "/api/weatherforecast",
             new { },
-            TestContext.Current.CancellationToken);
+            TestContext.Current.CancellationToken).PrintBody(output, "Created forecast:");
         var createdContent = await createResponse.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, createResponse.StatusCode);
         Assert.Contains("temperatureC", createdContent);
         Assert.Contains("date", createdContent);
 
-        var response = await httpClient.GetAsync("/api/weatherforecast", TestContext.Current.CancellationToken);
+        var response = await httpClient.GetAsync(
+            "/api/weatherforecast",
+            TestContext.Current.CancellationToken).PrintBody(output, "Forecast list:");
         var content = await response.Content.ReadAsStringAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);

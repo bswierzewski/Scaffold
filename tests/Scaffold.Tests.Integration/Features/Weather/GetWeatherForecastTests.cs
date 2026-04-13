@@ -8,8 +8,8 @@ using Xunit;
 namespace Scaffold.Tests.Integration.Features.Weather;
 
 [Collection(WeatherCollection.Name)]
-public sealed class GetWeatherForecastTests(WeatherCollection collection, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(collection)
+public sealed class GetWeatherForecastTests(WeatherEnvironment environment, ITestOutputHelper output)
+    : IntegrationTestBase<Program>(environment)
 {
     [Fact]
     public async Task should_return_empty_array_when_no_forecasts_exist()

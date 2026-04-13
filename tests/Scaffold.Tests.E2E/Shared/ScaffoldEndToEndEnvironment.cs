@@ -4,10 +4,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Scaffold.Tests.E2E.Shared;
 
+/// <summary>
+/// Shared runtime environment for the full Scaffold Aspire stack used by end-to-end tests.
+/// </summary>
 public sealed class ScaffoldEndToEndEnvironment : EndToEndTestEnvironment<Projects.Scaffold_AppHost>
 {
+    /// <summary>
+    /// Uses the gateway as the default HTTPS entry point for end-to-end tests.
+    /// </summary>
     protected override string DefaultHttpsResourceName => "gateway";
 
+    /// <summary>
+    /// Configures logging and HTTP client defaults for the Aspire test host.
+    /// </summary>
     protected override ValueTask ConfigureTestingServicesAsync(IServiceCollection services)
     {
         services.AddLogging(logging =>
@@ -24,6 +33,9 @@ public sealed class ScaffoldEndToEndEnvironment : EndToEndTestEnvironment<Projec
         return ValueTask.CompletedTask;
     }
 
+    /// <summary>
+    /// Waits until all resources required by the end-to-end tests are healthy.
+    /// </summary>
     protected override async ValueTask OnApplicationStartedAsync()
     {
         await Task.WhenAll(

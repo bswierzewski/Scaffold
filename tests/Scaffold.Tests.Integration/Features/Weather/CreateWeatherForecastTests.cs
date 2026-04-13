@@ -8,8 +8,8 @@ using Xunit;
 namespace Scaffold.Tests.Integration.Features.Weather;
 
 [Collection(WeatherCollection.Name)]
-public sealed class CreateWeatherForecastTests(WeatherCollection collection, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(collection)
+public sealed class CreateWeatherForecastTests(WeatherEnvironment environment, ITestOutputHelper output)
+    : IntegrationTestBase<Program>(environment)
 {
     [Fact]
     public async Task should_create_forecast_and_return_valid_response()
