@@ -32,10 +32,10 @@
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/Scaffold.Tests.E2E/">
-    <File Path="tests/Scaffold.Tests.E2E/README.MD" />
+    <Project Path="tests/Scaffold.Tests.E2E/Scaffold.Tests.E2E.csproj" />
   </Folder>
   <Folder Name="/tests/Scaffold.Tests.Integration/">
-    <File Path="tests/Scaffold.Tests.Integration/README.MD" />
+    <Project Path="tests/Scaffold.Tests.Integration/Scaffold.Tests.Integration.csproj" />
   </Folder>
   <Folder Name="/tests/Scaffold.Tests.Unit/">
     <File Path="tests/Scaffold.Tests.Unit/README.MD" />

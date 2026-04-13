@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <UserSecretsId>133f218b-b7a4-4bc6-8a0c-69c24300a991</UserSecretsId>
+    <NoWarn>$(NoWarn);ASPIRECERTIFICATES001</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

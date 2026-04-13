@@ -1,5 +1,4 @@
 var builder = DistributedApplication.CreateBuilder(args);
-var configuration = builder.Configuration;
 
 // Add PostgreSQL database container
 var postgres = builder.AddPostgres("postgres")
@@ -8,16 +7,29 @@ var postgres = builder.AddPostgres("postgres")
     .WithPgWeb(); // GUI for managing the database
 
 // Add database
-postgres.AddDatabase("scaffold");
+var database = postgres.AddDatabase("scaffold");
 
 // Add API project
-var api = builder.AddProject<Projects.Scaffold_Api>("api");
-    //.WithEnvironmentSection(configuration, "Configuration:Api");
+var api = builder.AddProject<Projects.Scaffold_Api>("api")
+    .WithReference(database, "Default")
+    .WaitFor(database)
+    .WithHttpHealthCheck("/health");
 
 // Add Frontend project (Vite + React)
-var app = builder.AddViteApp("app", "../../Frontend/web");
+var app = builder.AddViteApp("app", "../../frontend")
+    .WithHttpHealthCheck("/");
 
 builder.AddYarp("gateway")
+    .WithHttpsEndpoint()
+    .WithHttpsDeveloperCertificate()
+    .WithEndpoint("http", endpoint =>
+    {
+        endpoint.IsExternal = false;
+        endpoint.ExcludeReferenceEndpoint = true;
+    })
+    .WaitFor(api)
+    .WaitFor(app)
+    .WithHttpHealthCheck("/")
     .WithConfiguration(yarp =>
     {
         yarp.AddRoute("/api/{**catch-all}", api);
