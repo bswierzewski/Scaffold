@@ -3,11 +3,14 @@
     Generates the OpenAPI document for Scaffold.Api without triggering runtime side effects.
 
 .DESCRIPTION
-    Uses Microsoft.Extensions.ApiDescription.Server (dotnet build-time generation) with the
-    --tooling argument forwarded to the application via OpenApiGeneratorCommandLineArgs.
+    Uses Microsoft.Extensions.ApiDescription.Server (dotnet build-time generation) with
+    ASPNETCORE_ENVIRONMENT set to "Tooling" for the duration of the build.
 
-    The --tooling argument activates tooling mode in Program.cs, which skips:
-      - NpgsqlDataSource creation (no database connection)
+    dotnet-getdocument.dll launches the application in-process to extract the OpenAPI spec.
+    Because it inherits the current process environment, setting ASPNETCORE_ENVIRONMENT=Tooling
+    causes WebApplication.CreateBuilder to report that environment, which activates tooling mode
+    in Program.cs and skips all runtime side effects:
+      - NpgsqlDataSource creation (no database connection or connection pool)
       - Wolverine transport persistence
       - Module initialization (no migrations or seeding)
 
@@ -15,9 +18,8 @@
     in Scaffold.Api.csproj (repo root /openapi/).
 
 .NOTES
-    Tooling mode can also be activated without this script by setting the environment variable:
-      ASPNETCORE_ENVIRONMENT=Tooling
-    before running dotnet build with OpenApiGenerateDocuments=true.
+    The same tooling mode can be activated when running the app directly by either setting
+    ASPNETCORE_ENVIRONMENT=Tooling or passing the --tooling command-line argument.
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -27,7 +29,7 @@ $Green  = 'Green'
 $Red    = 'Red'
 $Cyan   = 'Cyan'
 
-$RepoRoot  = Resolve-Path (Join-Path $PSScriptRoot '..')
+$RepoRoot   = Resolve-Path (Join-Path $PSScriptRoot '..')
 $ApiProject = Join-Path $RepoRoot 'src\backend\Bootstrappers\Scaffold.Api\Scaffold.Api.csproj'
 $OutputDir  = Join-Path $RepoRoot 'openapi'
 
@@ -44,17 +46,17 @@ Write-Host "Project : $ApiProject"
 Write-Host "Output  : $OutputDir"
 Write-Host ''
 
-# OpenApiGenerateDocuments=true   — enables the build-time document generation target that is
-#                                   disabled by default in the csproj (avoids generation on
-#                                   every normal build).
-# OpenApiGeneratorCommandLineArgs — passes --tooling as a command-line argument to the app
-#                                   when Microsoft.Extensions.ApiDescription.Server launches it,
-#                                   activating tooling mode in Program.cs without relying on
-#                                   an environment variable.
+# Set ASPNETCORE_ENVIRONMENT=Tooling for the duration of this script session.
+# dotnet-getdocument.dll inherits this env var when it launches the application to extract
+# the OpenAPI spec, so builder.Environment.IsEnvironment("Tooling") returns true and the
+# runtime infrastructure (NpgsqlDataSource, Wolverine, module initialization) is skipped.
+$env:ASPNETCORE_ENVIRONMENT = 'Tooling'
+
+# OpenApiGenerateDocuments=true  — enables the build-time generation target; disabled by
+#                                  default in the csproj so normal builds stay fast.
 $output = & dotnet build $ApiProject `
     --configuration Release `
     --property:OpenApiGenerateDocuments=true `
-    "--property:OpenApiGeneratorCommandLineArgs=--tooling" `
     2>&1
 
 $exitCode = $LASTEXITCODE

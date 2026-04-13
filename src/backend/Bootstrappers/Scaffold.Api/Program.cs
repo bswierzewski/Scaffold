@@ -49,15 +49,10 @@ IModule[] modules = [
 ];
 
 // Tooling mode disables all runtime side effects: no database connection, no Wolverine
-// transport persistence, and no module initialization. Active when either:
-//   • ASPNETCORE_ENVIRONMENT=Tooling  — set externally (CI env var, launchSettings, etc.)
-//   • --tooling arg                   — passed by the generate-openapi script via
-//                                       OpenApiGeneratorCommandLineArgs MSBuild property,
-//                                       which Microsoft.Extensions.ApiDescription.Server
-//                                       forwards to the app at document-generation time.
-var isTooling = builder.Environment.IsEnvironment("Tooling") || args.Contains("--tooling");
-
-if (isTooling)
+// transport persistence, and no module initialization.
+// Activated by setting ASPNETCORE_ENVIRONMENT=Tooling — e.g. via the generate-openapi script
+// or a CI environment variable.
+if (builder.Environment.IsEnvironment("Tooling"))
     builder.AddModularToolingInfrastructure(modules);
 else
     builder.AddModularRuntimeInfrastructure(modules);
