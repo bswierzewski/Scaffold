@@ -1,6 +1,11 @@
 <#
 .SYNOPSIS
     Checks EF Core model changes and generates migrations for the configured modules.
+
+.NOTES
+    Each module project must contain an IDesignTimeDbContextFactory implementation.
+    This allows EF Tools to instantiate the DbContext directly without a startup project,
+    avoiding side effects from the API bootstrapper (Wolverine, NpgsqlDataSource, etc.).
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -14,7 +19,6 @@ $Cyan = 'Cyan'
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 Set-Location $RepoRoot
 
-$StartupProject = 'src/backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj'
 $MigrationsOutputDir = 'Infrastructure/Persistence/Migrations'
 
 $Modules = @(
@@ -24,20 +28,6 @@ $Modules = @(
         Project = 'src/backend/Modules/Weather/Scaffold.Weather/Scaffold.Weather.csproj'
     }
 )
-
-Write-Host 'Building startup project to ensure everything is up to date...' -ForegroundColor $Cyan
-
-$buildProcess = Start-Process `
-    -FilePath 'dotnet' `
-    -ArgumentList @('build', $StartupProject, '-v', 'q') `
-    -Wait `
-    -NoNewWindow `
-    -PassThru
-
-if ($buildProcess.ExitCode -ne 0) {
-    Write-Host 'FATAL: Build failed! Cannot proceed with migrations.' -ForegroundColor $Red
-    exit 1
-}
 
 Write-Host "`n========================================"
 Write-Host '  Checking Migrations' -ForegroundColor $Cyan
@@ -56,15 +46,11 @@ foreach ($module in $Modules) {
         continue
     }
 
-    $efBaseArgs = @(
-        'ef', 'migrations', 'has-pending-model-changes',
-        '--context', $module.Context,
-        '--project', $module.Project,
-        '--startup-project', $StartupProject,
-        '--no-build'
-    )
+    $output = & dotnet ef migrations has-pending-model-changes `
+        --context $module.Context `
+        --project $module.Project `
+        2>&1
 
-    $output = & dotnet @efBaseArgs 2>&1
     $exitCode = $LASTEXITCODE
     $outputText = $output -join "`n"
 
@@ -74,20 +60,7 @@ foreach ($module in $Modules) {
         continue
     }
 
-    if ($outputText -match 'No DbContext named') {
-        Write-Host 'SKIPPED (DbContext not found)' -ForegroundColor $Yellow
-        $skipped++
-        continue
-    }
-
-    if ($outputText -match 'Unable to create|Build failed|Connection refused') {
-        Write-Host 'ERROR (Infrastructure or Build failure)' -ForegroundColor $Red
-        Write-Host $outputText -ForegroundColor 'Gray'
-        $failed++
-        continue
-    }
-
-    if ($outputText -notmatch 'pending model changes|changes have been made to the model') {
+    if ($outputText -match 'No DbContext named|Unable to create|Build failed') {
         Write-Host 'ERROR' -ForegroundColor $Red
         Write-Host $outputText -ForegroundColor 'Gray'
         $failed++
@@ -99,16 +72,12 @@ foreach ($module in $Modules) {
     $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
     $migrationName = "Auto_$timestamp"
 
-    $efAddArgs = @(
-        'ef', 'migrations', 'add', $migrationName,
-        '--context', $module.Context,
-        '--project', $module.Project,
-        '--startup-project', $StartupProject,
-        '--no-build',
-        '--output-dir', $MigrationsOutputDir
-    )
+    $addOutput = & dotnet ef migrations add $migrationName `
+        --context $module.Context `
+        --project $module.Project `
+        --output-dir $MigrationsOutputDir `
+        2>&1
 
-    $addOutput = & dotnet @efAddArgs 2>&1
     $addExitCode = $LASTEXITCODE
 
     Write-Host (' [{0,-18}] : ' -f $module.Name) -NoNewline
