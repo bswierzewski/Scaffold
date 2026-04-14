@@ -1,8 +1,11 @@
 using BuildingBlocks.Core.Abstractions;
+using BuildingBlocks.Infrastructure.Persistence.DesignTime;
 using Microsoft.EntityFrameworkCore;
 using Scaffold.Weather.Domain;
 
 namespace Scaffold.Weather.Infrastructure.Persistence;
+
+public sealed class WeatherDbContextFactory : DesignTimeDbContextFactoryBase<WeatherDbContext>;
 
 public sealed class WeatherDbContext(DbContextOptions<WeatherDbContext> options) : DbContext(options)
 {
