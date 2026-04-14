@@ -16,8 +16,8 @@ public sealed class WeatherModule : IModule
     services.AddPostgres<WeatherDbContext>(Name);
   }
 
-  public Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+  public async Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken = default)
   {
-    return services.MigrateDatabaseAsync<WeatherDbContext>(cancellationToken);
+    await services.MigrateDatabaseAsync<WeatherDbContext>(cancellationToken);
   }
 }

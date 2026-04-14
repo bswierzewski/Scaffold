@@ -16,8 +16,8 @@ public sealed class AnnouncementsModule : IModule
     services.AddPostgres<AnnouncementsDbContext>(Name);
   }
 
-  public Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+  public async Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken = default)
   {
-    return services.MigrateDatabaseAsync<AnnouncementsDbContext>(cancellationToken);
+    await services.MigrateDatabaseAsync<AnnouncementsDbContext>(cancellationToken);
   }
 }

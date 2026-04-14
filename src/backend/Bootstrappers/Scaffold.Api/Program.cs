@@ -50,17 +50,17 @@ IModule[] modules = [
     new WeatherModule()
 ];
 
-// Tooling mode disables all runtime side effects: no database connection, no Wolverine
-// transport persistence, and no module initialization.
-// Activated by setting ASPNETCORE_ENVIRONMENT=Tooling — e.g. via the generate-openapi script
-// or a CI environment variable.
-if (builder.Environment.IsEnvironment("Tooling"))
-    builder.AddModularToolingInfrastructure(modules);
-else
-    builder.AddModularRuntimeInfrastructure(modules);
+// Let each module register its container services explicitly at the composition root.
+foreach (var module in modules)
+    module.AddServices(builder.Services, builder.Configuration);
+
+builder.AddModuleInfrastructure(modules);
 
 // Builds the DI container and the HTTP pipeline. After this point service registrations are closed.
 var app = builder.Build();
+
+foreach (var module in modules)
+    await module.InitializeAsync(app.Services);
 
 if (app.Environment.IsDevelopment())
 {
@@ -75,7 +75,7 @@ app.UseExceptionHandler();
 app.MapDefaultEndpoints();
 
 // Maps Wolverine HTTP endpoints with FluentValidation problem details middleware.
-app.MapModularEndpoints();
+app.MapModuleEndpoints();
 
 // Starts the web application and begins accepting requests.
 app.Run();
