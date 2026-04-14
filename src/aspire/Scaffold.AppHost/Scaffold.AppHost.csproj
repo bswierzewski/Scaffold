@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\backend\Bootstrappers\Scaffold.Api\Scaffold.Api.csproj" />
+    <ProjectReference Include="..\..\backend\Bootstrappers\Scaffold.DbMigrator\Scaffold.DbMigrator.csproj" />
   </ItemGroup>
 
   <ItemGroup>

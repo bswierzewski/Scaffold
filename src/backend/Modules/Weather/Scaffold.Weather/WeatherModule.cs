@@ -9,15 +9,16 @@ namespace Scaffold.Weather;
 
 public sealed class WeatherModule : IModule
 {
-  public static string Name => "Weather";
+  public string Name => nameof(WeatherModule);
 
   public void AddServices(IServiceCollection services, IConfiguration configuration)
   {
-    services.AddPostgres<WeatherDbContext>(Name);
+    services.AddPostgres<WeatherDbContext>();
   }
 
-  public async Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken = default)
-  {
-    await services.MigrateDatabaseAsync<WeatherDbContext>(cancellationToken);
-  }
+  public Task InitializeAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+      => Task.CompletedTask;
+
+  public Task InitializeMigrationsAsync(IServiceProvider services, CancellationToken cancellationToken = default)
+      => services.MigrateDatabaseAsync<WeatherDbContext>(cancellationToken);
 }

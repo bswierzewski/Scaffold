@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
@@ -11,7 +12,7 @@ public sealed class AnnouncementsDbContextFactory : IDesignTimeDbContextFactory<
 
     optionsBuilder.UseNpgsql(
         connectionString: "Host=_design-time_;Database=_design-time_",
-        npgsqlOptionsAction: o => o.MigrationsHistoryTable("__EFMigrationsHistory", AnnouncementsModule.Name.ToLowerInvariant())
+      npgsqlOptionsAction: o => o.MigrationsHistoryTable("__EFMigrationsHistory", typeof(AnnouncementsDbContext).ToDbContextSchemaName())
     );
 
     return new AnnouncementsDbContext(optionsBuilder.Options);

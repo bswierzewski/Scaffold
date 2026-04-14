@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Scaffold.Weather.Domain;
 
@@ -9,7 +10,7 @@ public sealed class WeatherDbContext(DbContextOptions<WeatherDbContext> options)
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
-    modelBuilder.HasDefaultSchema(WeatherModule.Name.ToLowerInvariant());
+    modelBuilder.HasDefaultSchema(typeof(WeatherDbContext).ToDbContextSchemaName());
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(WeatherDbContext).Assembly);
 
     base.OnModelCreating(modelBuilder);

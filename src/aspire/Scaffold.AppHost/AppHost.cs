@@ -9,10 +9,16 @@ var postgres = builder.AddPostgres("postgres")
 // Add database
 var database = postgres.AddDatabase("scaffold");
 
+// Run database migrations before starting the API.
+var dbMigrator = builder.AddProject<Projects.Scaffold_DbMigrator>("db-migrator")
+    .WithReference(database, "Default")
+    .WaitFor(database);
+
 // Add API project
 var api = builder.AddProject<Projects.Scaffold_Api>("api")
     .WithReference(database, "Default")
     .WaitFor(database)
+    .WaitForCompletion(dbMigrator)
     .WithHttpHealthCheck("/health");
 
 // Add Frontend project (Vite + React)

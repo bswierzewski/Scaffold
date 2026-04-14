@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Hosting\BuildingBlocks.Hosting.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\Scaffold.Bootstrapping\Scaffold.Bootstrapping.csproj" />
     <ProjectReference Include="..\..\Modules\Announcements\Scaffold.Announcements\Scaffold.Announcements.csproj" />
     <ProjectReference Include="..\..\Modules\Weather\Scaffold.Weather\Scaffold.Weather.csproj" />
   </ItemGroup>

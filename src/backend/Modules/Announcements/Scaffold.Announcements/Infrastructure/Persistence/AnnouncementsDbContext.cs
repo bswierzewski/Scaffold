@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using Scaffold.Announcements.Domain;
 
@@ -9,7 +10,7 @@ public sealed class AnnouncementsDbContext(DbContextOptions<AnnouncementsDbConte
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
-    modelBuilder.HasDefaultSchema(AnnouncementsModule.Name.ToLowerInvariant());
+    modelBuilder.HasDefaultSchema(typeof(AnnouncementsDbContext).ToDbContextSchemaName());
     modelBuilder.ApplyConfigurationsFromAssembly(typeof(AnnouncementsDbContext).Assembly);
 
     base.OnModelCreating(modelBuilder);

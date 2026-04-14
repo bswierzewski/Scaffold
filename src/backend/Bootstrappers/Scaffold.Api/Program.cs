@@ -4,8 +4,8 @@ using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
+using Scaffold.Bootstrapping;
 using Scaffold.Announcements;
-using Scaffold.Api.Authentication;
 using Scaffold.Weather;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -39,16 +39,9 @@ builder.Services.AddOpenApi(options =>
     options.AddProblemDetailsResponses();
 });
 
-// Provides a temporary current-user implementation so infrastructure depending on ICurrentUser
-// can work before real authentication and claims mapping are introduced.
-builder.Services.AddScoped<ICurrentUser, DummyUserContext>();
-
 // Lists application modules explicitly so the bootstrapper can register their services
 // and expose their Wolverine handlers/endpoints.
-IModule[] modules = [
-    new AnnouncementsModule(),
-    new WeatherModule()
-];
+IModule[] modules = ScaffoldModules.Create();
 
 // Let each module register its container services explicitly at the composition root.
 foreach (var module in modules)
