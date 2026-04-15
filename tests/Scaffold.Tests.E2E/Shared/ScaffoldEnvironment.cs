@@ -1,4 +1,5 @@
 using BuildingBlocks.Tests.E2E;
+using BuildingBlocks.Infrastructure.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -13,6 +14,11 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
     /// Uses the gateway as the default HTTPS entry point for end-to-end tests.
     /// </summary>
     protected override string DefaultHttpsResourceName => "gateway";
+
+    /// <summary>   
+    /// Loads environment variables from envs
+    /// </summary>
+    protected override void LoadEnvironment() => EnvLoader.LoadEndToEnd(AppContext.BaseDirectory);
 
     /// <summary>
     /// Configures logging and HTTP client defaults for the Aspire test host.

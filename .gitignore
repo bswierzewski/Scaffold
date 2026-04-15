@@ -10,6 +10,7 @@
 
 # dotenv files
 .env
+.env.*
 appsettings.*.json
 
 # User-specific files

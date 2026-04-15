@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\backend\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" IsAspireProjectResource="false" />
     <ProjectReference Include="..\..\backend\Bootstrappers\Scaffold.Api\Scaffold.Api.csproj" />
     <ProjectReference Include="..\..\backend\Bootstrappers\Scaffold.DbMigrator\Scaffold.DbMigrator.csproj" />
   </ItemGroup>

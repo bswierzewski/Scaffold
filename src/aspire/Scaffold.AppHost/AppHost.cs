@@ -1,3 +1,7 @@
+using BuildingBlocks.Infrastructure.Configuration;
+
+EnvLoader.Load(AppContext.BaseDirectory);
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 const string clerkAuthenticationSectionPath = "Authentication:Clerk";
