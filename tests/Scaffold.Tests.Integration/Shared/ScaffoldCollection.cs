@@ -1,4 +1,3 @@
-using BuildingBlocks.Tests.Integration;
 using Xunit;
 
 namespace Scaffold.Tests.Integration.Shared;
@@ -7,7 +6,7 @@ namespace Scaffold.Tests.Integration.Shared;
 /// xUnit collection definition shared by all integration tests.
 /// </summary>
 [CollectionDefinition(Name, DisableParallelization = true)]
-public sealed class ScaffoldCollection : IntegrationTestCollection<ScaffoldEnvironment>
+public sealed class ScaffoldCollection : ICollectionFixture<ScaffoldEnvironment>
 {
     public const string Name = "Scaffold";
 }

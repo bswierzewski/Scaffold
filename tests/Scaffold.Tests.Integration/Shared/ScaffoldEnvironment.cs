@@ -13,14 +13,14 @@ namespace Scaffold.Tests.Integration.Shared;
 /// </summary>
 public sealed class ScaffoldEnvironment : IntegrationTestEnvironment<Program>
 {
-    public override void LoadEnvironment() => EnvLoader.LoadIntegration(AppContext.BaseDirectory);
+    protected override void LoadEnvironment() => EnvLoader.LoadIntegration(AppContext.BaseDirectory);
 
-    public override void ConfigureServices(IServiceCollection services)
+    protected override void ConfigureEnvironmentServices(IServiceCollection services)
     {
         services.AddScoped<BuildingBlocks.Core.Abstractions.ICurrentUser, IntegrationCurrentUserHandler>();
     }
 
-    protected override async ValueTask InitializeDatabaseAsync()
+    protected override async ValueTask InitializeEnvironmentAsync()
     {
         await IntegrationTestDatabaseUtils.MigrateDatabaseAsync<AnnouncementsDbContext>(ConnectionString);
         await IntegrationTestDatabaseUtils.MigrateDatabaseAsync<WeatherDbContext>(ConnectionString);
