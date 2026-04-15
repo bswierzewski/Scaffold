@@ -1,4 +1,3 @@
-using BuildingBlocks.Infrastructure.Configuration;
 using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Utils;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,9 +12,9 @@ namespace Scaffold.Tests.Integration.Shared;
 /// </summary>
 public sealed class ScaffoldEnvironment : IntegrationTestEnvironment<Program>
 {
-    protected override void LoadEnvironment() => EnvLoader.LoadIntegration(AppContext.BaseDirectory);
+    public string A = "Hello";
 
-    protected override void ConfigureEnvironmentServices(IServiceCollection services)
+    public override void ConfigureServices(IServiceCollection services)
     {
         services.AddScoped<BuildingBlocks.Core.Abstractions.ICurrentUser, IntegrationCurrentUserHandler>();
     }

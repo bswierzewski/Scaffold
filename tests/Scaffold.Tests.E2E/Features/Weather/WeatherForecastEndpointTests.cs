@@ -1,20 +1,18 @@
-using BuildingBlocks.Tests.Authentication.Jwt;
 using BuildingBlocks.Tests.E2E;
 using BuildingBlocks.Tests.E2E.Extensions;
 using Scaffold.Tests.E2E.Shared;
 using System.Net.Http.Json;
-using Xunit;
 
 namespace Scaffold.Tests.E2E.Features.Weather;
 
 [Collection(ScaffoldCollection.Name)]
 public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment, ITestOutputHelper output)
-    : EndToEndTestBase<Projects.Scaffold_AppHost>(environment)
+    : EndToEndTestBase<Projects.Scaffold_AppHost, ScaffoldEnvironment>(environment)
 {
     [Fact]
     public async Task should_return_unauthorized_when_creating_without_token()
     {
-        using var httpClient = CreateHttpsClient();
+        using var httpClient = Environment.App.CreateHttpClient(Environment.GatewayResourceName, "https");
 
         using var response = await httpClient.PostAsJsonAsync(
             "/api/weatherforecast",
@@ -27,7 +25,7 @@ public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment
     [Fact]
     public async Task should_return_forbidden_when_creating_as_regular_user()
     {
-        using var httpClient = CreateHttpsClient().With(Users.User);
+        using var httpClient = Environment.App.CreateHttpClient(Environment.GatewayResourceName, "https").As(Users.User);
 
         using var response = await httpClient.PostAsJsonAsync(
             "/api/weatherforecast",
@@ -40,7 +38,7 @@ public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment
     [Fact]
     public async Task should_create_weather_forecast_when_authenticated_as_admin()
     {
-        using var httpClient = CreateHttpsClient().With(Users.Admin);
+        using var httpClient = Environment.App.CreateHttpClient(Environment.GatewayResourceName, "https").As(Users.Admin);
 
         using var response = await httpClient.PostAsJsonAsync(
             "/api/weatherforecast",
@@ -57,7 +55,7 @@ public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment
     [Fact]
     public async Task should_return_weather_forecast_list_through_gateway_api_route()
     {
-        using var httpClient = CreateHttpsClient();
+        using var httpClient = Environment.App.CreateHttpClient(Environment.GatewayResourceName, "https");
 
         var response = await httpClient.GetAsync(
             "/api/weatherforecast",

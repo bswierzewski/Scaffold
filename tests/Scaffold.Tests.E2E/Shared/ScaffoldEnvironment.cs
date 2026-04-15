@@ -1,6 +1,4 @@
 using BuildingBlocks.Tests.E2E;
-using BuildingBlocks.Infrastructure.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Scaffold.Tests.E2E.Shared;
@@ -11,19 +9,14 @@ namespace Scaffold.Tests.E2E.Shared;
 public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaffold_AppHost>
 {
     /// <summary>
-    /// Uses the gateway as the default HTTPS entry point for end-to-end tests.
+    /// Main HTTPS entry point used by end-to-end tests.
     /// </summary>
-    protected override string DefaultHttpsResourceName => "gateway";
-
-    /// <summary>   
-    /// Loads environment variables from envs
-    /// </summary>
-    protected override void LoadEnvironment() => EnvLoader.LoadEndToEnd(AppContext.BaseDirectory);
+    public string GatewayResourceName => "gateway";
 
     /// <summary>
     /// Configures logging and HTTP client defaults for the Aspire test host.
     /// </summary>
-    protected override void ConfigureEnvironmentServices(IServiceCollection services)
+    protected override ValueTask ConfigureServices(IServiceCollection services)
     {
         services.AddLogging(logging =>
         {
@@ -35,6 +28,8 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
         {
             clientBuilder.AddStandardResilienceHandler();
         });
+
+        return ValueTask.CompletedTask;
     }
 
     /// <summary>
@@ -43,10 +38,10 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
     protected override async ValueTask InitializeEnvironmentAsync()
     {
         await Task.WhenAll(
-                WaitForResourceHealthyAsync("scaffold"),
-                WaitForResourceHealthyAsync("app"),
-                WaitForResourceHealthyAsync("api"),
-                WaitForResourceHealthyAsync("gateway"))
+                App.ResourceNotifications.WaitForResourceHealthyAsync("scaffold"),
+                App.ResourceNotifications.WaitForResourceHealthyAsync("app"),
+                App.ResourceNotifications.WaitForResourceHealthyAsync("api"),
+                App.ResourceNotifications.WaitForResourceHealthyAsync(GatewayResourceName))
             .WaitAsync(TimeSpan.FromMinutes(3));
     }
 }

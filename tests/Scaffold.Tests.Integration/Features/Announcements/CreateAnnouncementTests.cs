@@ -7,7 +7,7 @@ namespace Scaffold.Tests.Integration.Features.Announcements;
 
 [Collection(ScaffoldCollection.Name)]
 public sealed class CreateAnnouncementTests(ScaffoldEnvironment environment, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(environment)
+    : IntegrationTestBase<Program, ScaffoldEnvironment>(environment)
 {
     [Fact]
     public async Task should_create_announcement_and_return_valid_response()

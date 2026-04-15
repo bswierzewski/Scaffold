@@ -7,7 +7,7 @@ namespace Scaffold.Tests.Integration.Features.Weather;
 
 [Collection(ScaffoldCollection.Name)]
 public sealed class GetWeatherForecastTests(ScaffoldEnvironment environment, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(environment)
+    : IntegrationTestBase<Program, ScaffoldEnvironment>(environment)
 {
     [Fact]
     public async Task should_return_empty_array_when_no_forecasts_exist()

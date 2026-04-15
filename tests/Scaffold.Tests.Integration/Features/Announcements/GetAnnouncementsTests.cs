@@ -7,7 +7,7 @@ namespace Scaffold.Tests.Integration.Features.Announcements;
 
 [Collection(ScaffoldCollection.Name)]
 public sealed class GetAnnouncementsTests(ScaffoldEnvironment environment, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(environment)
+    : IntegrationTestBase<Program, ScaffoldEnvironment>(environment)
 {
     [Fact]
     public async Task should_return_empty_array_when_no_announcements_exist()

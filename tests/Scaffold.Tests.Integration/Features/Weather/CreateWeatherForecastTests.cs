@@ -7,7 +7,7 @@ namespace Scaffold.Tests.Integration.Features.Weather;
 
 [Collection(ScaffoldCollection.Name)]
 public sealed class CreateWeatherForecastTests(ScaffoldEnvironment environment, ITestOutputHelper output)
-    : IntegrationTestBase<Program>(environment)
+    : IntegrationTestBase<Program, ScaffoldEnvironment>(environment)
 {
     [Fact]
     public async Task should_create_forecast_and_return_valid_response()

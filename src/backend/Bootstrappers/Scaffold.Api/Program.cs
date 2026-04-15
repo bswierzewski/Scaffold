@@ -6,8 +6,6 @@ using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using Scaffold.Bootstrapping;
-using Scaffold.Announcements;
-using Scaffold.Weather;
 
 var builder = WebApplication.CreateBuilder(args);
 

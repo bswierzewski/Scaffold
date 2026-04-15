@@ -1,4 +1,3 @@
-using Aspire.Hosting.ApplicationModel;
 using Microsoft.Extensions.Configuration;
 
 internal static class ResourceBuilderConfigurationExtensions
@@ -11,8 +10,8 @@ internal static class ResourceBuilderConfigurationExtensions
     {
         var section = configuration.GetRequiredSection(sectionPath);
 
-        foreach (var (key, value) in EnumerateSectionValues(section))        
-            builder.WithEnvironment(key.Replace(":", "__"), value);        
+        foreach (var (key, value) in EnumerateSectionValues(section))
+            builder.WithEnvironment(key.Replace(":", "__"), value);
 
         return builder;
     }
@@ -27,11 +26,11 @@ internal static class ResourceBuilderConfigurationExtensions
                 ? child.Key
                 : $"{prefix}:{child.Key}";
 
-            if (child.Value is not null)            
-                yield return new KeyValuePair<string, string>(key, child.Value);            
+            if (child.Value is not null)
+                yield return new KeyValuePair<string, string>(key, child.Value);
 
-            foreach (var item in EnumerateSectionValues(child, key))            
-                yield return item;            
+            foreach (var item in EnumerateSectionValues(child, key))
+                yield return item;
         }
     }
 }

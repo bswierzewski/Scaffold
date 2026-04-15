@@ -1,5 +1,3 @@
-using Xunit;
-
 namespace Scaffold.Tests.Integration.Shared;
 
 /// <summary>
