@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Attributes;
 using Scaffold.Weather.Domain;
 using Scaffold.Weather.Features.GetWeatherForecast;
 using Scaffold.Weather.Infrastructure.Persistence;
@@ -9,6 +10,7 @@ public record CreateWeatherForecastRequest;
 
 public static class CreateWeatherForecastHandler
 {
+  [Authorize(Roles = "admin")]
   [WolverinePost("/api/weatherforecast")]
   public static async Task<GetWeatherForecastResponse> Handle(
       CreateWeatherForecastRequest request,

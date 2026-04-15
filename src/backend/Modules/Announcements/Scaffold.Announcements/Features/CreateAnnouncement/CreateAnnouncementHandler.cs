@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Attributes;
 using Scaffold.Announcements.Domain;
 using Scaffold.Announcements.Features.GetAnnouncements;
 using Scaffold.Announcements.Infrastructure.Persistence;
@@ -11,6 +12,7 @@ public sealed record CreateAnnouncementRequest(
 
 public static class CreateAnnouncementHandler
 {
+  [Authorize(Roles = "admin")]
   [WolverinePost("/api/announcements")]
   public static async Task<GetAnnouncementsResponse> Handle(
       CreateAnnouncementRequest request,

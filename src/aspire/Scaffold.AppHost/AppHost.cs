@@ -1,5 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+const string clerkAuthenticationSectionPath = "Authentication:Clerk";
+
 // Add PostgreSQL database container
 var postgres = builder.AddPostgres("postgres")
     .WithImage("postgres", "18-alpine")
@@ -17,6 +19,7 @@ var dbMigrator = builder.AddProject<Projects.Scaffold_DbMigrator>("db-migrator")
 // Add API project
 var api = builder.AddProject<Projects.Scaffold_Api>("api")
     .WithReference(database, "Default")
+    .WithEnvironmentSection(builder.Configuration, clerkAuthenticationSectionPath)
     .WaitFor(database)
     .WaitForCompletion(dbMigrator)
     .WithHttpHealthCheck("/health");
