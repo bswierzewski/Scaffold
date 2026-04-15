@@ -14,6 +14,7 @@ public sealed class CreateWeatherForecastTests(ScaffoldEnvironment environment, 
     {
         var result = await AlbaHost.Scenario(s =>
         {
+            s.As(Users.Admin);
             s.Post.Json(new { }).ToUrl("/api/weatherforecast");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         }).PrintBody(output, "Created forecast:");
@@ -32,6 +33,7 @@ public sealed class CreateWeatherForecastTests(ScaffoldEnvironment environment, 
     {
         var createResult = await AlbaHost.Scenario(s =>
         {
+            s.As(Users.Admin);
             s.Post.Json(new { }).ToUrl("/api/weatherforecast");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         });

@@ -14,6 +14,7 @@ public sealed class GetAnnouncementsTests(ScaffoldEnvironment environment, ITest
     {
         var result = await AlbaHost.Scenario(s =>
         {
+            s.As(Users.Anonymous);
             s.Get.Url("/api/announcements");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         }).PrintBody(output);
@@ -27,19 +28,27 @@ public sealed class GetAnnouncementsTests(ScaffoldEnvironment environment, ITest
     [Fact]
     public async Task should_return_announcements_sorted_by_published_at_descending()
     {
-        await AlbaHost.Scenario(s => s.Post.Json(new
+        await AlbaHost.Scenario(s =>
         {
-            Title = "Earlier message",
-            Content = "Created first"
-        }).ToUrl("/api/announcements"));
+            s.As(Users.Admin);
+            s.Post.Json(new
+            {
+                Title = "Earlier message",
+                Content = "Created first"
+            }).ToUrl("/api/announcements");
+        });
 
         await Task.Delay(25, TestContext.Current.CancellationToken);
 
-        await AlbaHost.Scenario(s => s.Post.Json(new
+        await AlbaHost.Scenario(s =>
         {
-            Title = "Later message",
-            Content = "Created second"
-        }).ToUrl("/api/announcements"));
+            s.As(Users.Admin);
+            s.Post.Json(new
+            {
+                Title = "Later message",
+                Content = "Created second"
+            }).ToUrl("/api/announcements");
+        });
 
         var result = await AlbaHost.Scenario(s =>
         {

@@ -14,6 +14,7 @@ public sealed class GetWeatherForecastTests(ScaffoldEnvironment environment, ITe
     {
         var result = await AlbaHost.Scenario(s =>
         {
+            s.As(Users.Anonymous);
             s.Get.Url("/api/weatherforecast");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         }).PrintBody(output);
@@ -27,8 +28,17 @@ public sealed class GetWeatherForecastTests(ScaffoldEnvironment environment, ITe
     [Fact]
     public async Task should_return_forecasts_sorted_by_date()
     {
-        await AlbaHost.Scenario(s => s.Post.Json(new { }).ToUrl("/api/weatherforecast"));
-        await AlbaHost.Scenario(s => s.Post.Json(new { }).ToUrl("/api/weatherforecast"));
+        await AlbaHost.Scenario(s =>
+        {
+            s.As(Users.Admin);
+            s.Post.Json(new { }).ToUrl("/api/weatherforecast");
+        });
+
+        await AlbaHost.Scenario(s =>
+        {
+            s.As(Users.Admin);
+            s.Post.Json(new { }).ToUrl("/api/weatherforecast");
+        });
 
         var result = await AlbaHost.Scenario(s =>
         {

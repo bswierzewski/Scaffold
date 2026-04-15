@@ -20,6 +20,7 @@ public sealed class CreateAnnouncementTests(ScaffoldEnvironment environment, ITe
 
         var result = await AlbaHost.Scenario(s =>
         {
+            s.As(Users.Admin);
             s.Post.Json(request).ToUrl("/api/announcements");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         }).PrintBody(output, "Created announcement:");
@@ -44,6 +45,7 @@ public sealed class CreateAnnouncementTests(ScaffoldEnvironment environment, ITe
 
         var createResult = await AlbaHost.Scenario(s =>
         {
+            s.As(Users.Admin);
             s.Post.Json(request).ToUrl("/api/announcements");
             s.StatusCodeShouldBe(HttpStatusCode.OK);
         });

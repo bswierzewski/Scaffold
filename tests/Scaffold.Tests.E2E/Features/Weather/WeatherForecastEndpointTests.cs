@@ -1,5 +1,4 @@
 using BuildingBlocks.Tests.Authentication.Jwt;
-using BuildingBlocks.Tests.Authentication.Users;
 using BuildingBlocks.Tests.E2E;
 using BuildingBlocks.Tests.E2E.Extensions;
 using Scaffold.Tests.E2E.Shared;
@@ -28,7 +27,7 @@ public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment
     [Fact]
     public async Task should_return_forbidden_when_creating_as_regular_user()
     {
-        using var httpClient = CreateHttpsClient().AuthenticateWith(TestUsers.User);
+        using var httpClient = CreateHttpsClient().With(Users.User);
 
         using var response = await httpClient.PostAsJsonAsync(
             "/api/weatherforecast",
@@ -41,7 +40,7 @@ public sealed class WeatherForecastEndpointTests(ScaffoldEnvironment environment
     [Fact]
     public async Task should_create_weather_forecast_when_authenticated_as_admin()
     {
-        using var httpClient = CreateHttpsClient().AuthenticateWith(TestUsers.Admin);
+        using var httpClient = CreateHttpsClient().With(Users.Admin);
 
         using var response = await httpClient.PostAsJsonAsync(
             "/api/weatherforecast",

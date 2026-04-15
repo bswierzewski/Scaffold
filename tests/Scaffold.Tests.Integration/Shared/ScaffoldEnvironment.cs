@@ -1,4 +1,3 @@
-using BuildingBlocks.Core.Abstractions;
 using BuildingBlocks.Infrastructure.Configuration;
 using BuildingBlocks.Tests.Integration;
 using BuildingBlocks.Tests.Integration.Utils;
@@ -15,6 +14,11 @@ namespace Scaffold.Tests.Integration.Shared;
 public sealed class ScaffoldEnvironment : IntegrationTestEnvironment<Program>
 {
     public override void LoadEnvironment() => EnvLoader.LoadIntegration(AppContext.BaseDirectory);
+
+    public override void ConfigureServices(IServiceCollection services)
+    {
+        services.AddScoped<BuildingBlocks.Core.Abstractions.ICurrentUser, IntegrationCurrentUserHandler>();
+    }
 
     protected override async ValueTask InitializeDatabaseAsync()
     {
