@@ -1,6 +1,4 @@
-using BuildingBlocks.Core.Abstractions;
-using Scaffold.Announcements;
-using Scaffold.Weather;
+using BuildingBlocks.Core.Modules;
 
 namespace Scaffold.Bootstrapping;
 
@@ -11,7 +9,5 @@ public static class ScaffoldModules
 {
   public static IModule[] Create() =>
   [
-      new AnnouncementsModule(),
-      new WeatherModule()
   ];
 }

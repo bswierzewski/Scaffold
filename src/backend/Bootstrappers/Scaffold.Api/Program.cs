@@ -1,5 +1,4 @@
-using BuildingBlocks.Core.Abstractions;
-using BuildingBlocks.Infrastructure.Authentication.Clerk;
+using BuildingBlocks.Core.Modules;
 using BuildingBlocks.Hosting;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
@@ -25,9 +24,6 @@ builder.Host.UseSerilog(serilog =>
 
 // Registers the global exception handler so unhandled exceptions are converted to one consistent API response shape.
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-
-// Enables Clerk authentication backed by Clerk-compatible claims mapping.
-builder.Services.AddClerkAuthentication(builder.Configuration);
 
 // Enables RFC 7807 ProblemDetails responses and adds diagnostic metadata useful during debugging.
 builder.Services.AddProblemDetails(options =>
