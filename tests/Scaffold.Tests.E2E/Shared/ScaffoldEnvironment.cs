@@ -16,7 +16,7 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
     /// <summary>
     /// Configures logging and HTTP client defaults for the Aspire test host.
     /// </summary>
-    protected override ValueTask ConfigureServices(IServiceCollection services)
+    protected override void ConfigureEnvironmentServices(IServiceCollection services)
     {
         services.AddLogging(logging =>
         {
@@ -28,8 +28,6 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
         {
             clientBuilder.AddStandardResilienceHandler();
         });
-
-        return ValueTask.CompletedTask;
     }
 
     /// <summary>

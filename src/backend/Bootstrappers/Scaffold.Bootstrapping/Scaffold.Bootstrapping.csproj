@@ -2,8 +2,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Core\BuildingBlocks.Core.csproj" />
-    <ProjectReference Include="..\..\Modules\Announcements\Scaffold.Announcements\Scaffold.Announcements.csproj" />
-    <ProjectReference Include="..\..\Modules\Weather\Scaffold.Weather\Scaffold.Weather.csproj" />
   </ItemGroup>
 
 </Project>

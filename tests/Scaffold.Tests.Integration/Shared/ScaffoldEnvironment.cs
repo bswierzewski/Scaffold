@@ -10,11 +10,8 @@ namespace Scaffold.Tests.Integration.Shared;
 /// </summary>
 public sealed class ScaffoldEnvironment : IntegrationTestEnvironment<Program>
 {
-    public override void ConfigureServices(IServiceCollection services)
-    {
-    }
+    protected override void ConfigureEnvironmentServices(IServiceCollection services) { }
 
-    protected override async ValueTask InitializeEnvironmentAsync()
-    {
-    }
+    protected override ValueTask InitializeEnvironmentAsync()
+        => ValueTask.CompletedTask;
 }
