@@ -16,7 +16,7 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
     /// <summary>
     /// Configures logging and HTTP client defaults for the Aspire test host.
     /// </summary>
-    protected override void ConfigureEnvironmentServices(IServiceCollection services)
+    protected override void ConfigureServices(IServiceCollection services)
     {
         services.AddLogging(logging =>
         {
@@ -36,7 +36,7 @@ public sealed class ScaffoldEnvironment : EndToEndTestEnvironment<Projects.Scaff
     protected override async ValueTask InitializeEnvironmentAsync()
     {
         await Task.WhenAll(
-                App.ResourceNotifications.WaitForResourceHealthyAsync("scaffold"),
+                App.ResourceNotifications.WaitForResourceHealthyAsync("db"),
                 App.ResourceNotifications.WaitForResourceHealthyAsync("app"),
                 App.ResourceNotifications.WaitForResourceHealthyAsync("api"),
                 App.ResourceNotifications.WaitForResourceHealthyAsync(GatewayResourceName))

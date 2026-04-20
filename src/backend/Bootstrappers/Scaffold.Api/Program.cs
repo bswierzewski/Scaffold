@@ -4,7 +4,6 @@ using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
-using Scaffold.Bootstrapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,7 +38,7 @@ builder.Services.AddOpenApi(options =>
 
 // Lists application modules explicitly so the bootstrapper can register their services
 // and expose their Wolverine handlers/endpoints.
-IModule[] modules = ScaffoldModules.Create();
+IModule[] modules = [];
 
 // Let each module register its container services explicitly at the composition root.
 foreach (var module in modules)
@@ -71,6 +70,9 @@ app.MapDefaultEndpoints();
 
 // Maps Wolverine HTTP endpoints with FluentValidation problem details middleware.
 app.MapModuleEndpoints();
+
+foreach (var module in modules)
+    await module.InitializeMigrationsAsync(app.Services);
 
 // Starts the web application and begins accepting requests.
 app.Run();

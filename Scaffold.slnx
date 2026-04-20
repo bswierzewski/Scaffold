@@ -18,8 +18,6 @@
   <Folder Name="/src/backend/" />
   <Folder Name="/src/backend/Bootstrappers/">
     <Project Path="src/backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj" />
-    <Project Path="src/backend/Bootstrappers/Scaffold.Bootstrapping/Scaffold.Bootstrapping.csproj" />
-    <Project Path="src/backend/Bootstrappers/Scaffold.DbMigrator/Scaffold.DbMigrator.csproj" />
   </Folder>
   <Folder Name="/src/backend/Modules/" />
   <Folder Name="/src/backend/BuildingBlocks/">
@@ -31,9 +29,6 @@
   <Folder Name="/tests/" />
   <Folder Name="/tests/Scaffold.Tests.E2E/">
     <Project Path="tests/Scaffold.Tests.E2E/Scaffold.Tests.E2E.csproj" />
-  </Folder>
-  <Folder Name="/tests/Scaffold.Tests.Integration/">
-    <Project Path="tests/Scaffold.Tests.Integration/Scaffold.Tests.Integration.csproj" />
   </Folder>
   <Folder Name="/tests/Scaffold.Tests.Unit/">
     <File Path="tests/Scaffold.Tests.Unit/README.MD" />
