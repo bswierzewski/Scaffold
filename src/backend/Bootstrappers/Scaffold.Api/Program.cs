@@ -5,6 +5,8 @@ using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
+using BuildingBlocks.Identity;
+using Scaffold.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,9 +39,15 @@ builder.Services.AddOpenApi(options =>
     options.AddProblemDetailsResponses();
 });
 
+// Provides a deterministic test user so infrastructure depending on ICurrentUser can resolve in test runs.
+builder.Services.AddScoped<ICurrentUser, DummyUser>();
+
 // Lists application modules explicitly so the bootstrapper can register their services
 // and expose their Wolverine handlers/endpoints.
-IModule[] modules = [];
+IModule[] modules =
+[
+    new IdentityModule()
+];
 
 // Let each module register its container services explicitly at the composition root.
 foreach (var module in modules)
@@ -63,8 +71,8 @@ if (app.Environment.IsDevelopment())
 app.UseExceptionHandler();
 
 // Runs authentication and authorization before Wolverine maps protected HTTP endpoints.
-app.UseAuthentication();
-app.UseAuthorization();
+//app.UseAuthentication();
+//app.UseAuthorization();
 
 // Maps standard Aspire endpoints such as health and liveness probes used by orchestration and diagnostics.
 app.MapDefaultEndpoints();

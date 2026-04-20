@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Hosting\BuildingBlocks.Hosting.csproj" />
+    <ProjectReference Include="..\..\BuildingBlocks\Modules\Identity\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
   </ItemGroup>
 
