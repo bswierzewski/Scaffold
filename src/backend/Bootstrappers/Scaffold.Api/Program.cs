@@ -4,7 +4,9 @@ using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Modules;
 using BuildingBlocks.Infrastructure.OpenApi;
+using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
+using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using BuildingBlocks.Identity;
 using Scaffold.Api;
 
@@ -53,7 +55,9 @@ IModule[] modules =
 foreach (var module in modules)
     module.AddServices(builder.Services, builder.Configuration);
 
-builder.AddModuleInfrastructure(modules);
+var dataSource = builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
+
+builder.AddWolverine(modules, dataSource);
 
 // Builds the DI container and the HTTP pipeline. After this point service registrations are closed.
 var app = builder.Build();

@@ -3,9 +3,9 @@
     Checks EF Core model changes and generates migrations for the configured modules.
 
 .NOTES
-    Each module project must contain an IDesignTimeDbContextFactory implementation.
+    Each module project contains its own design-time DbContext factory.
     This allows EF Tools to instantiate the DbContext directly without a startup project,
-    avoiding side effects from the API bootstrapper (Wolverine, NpgsqlDataSource, etc.).
+    avoiding side effects from the API bootstrapper.
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -17,7 +17,6 @@ $Yellow = 'DarkYellow'
 $Cyan = 'Cyan'
 
 $RepoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
-Set-Location $RepoRoot
 
 $MigrationsOutputDir = 'Infrastructure/Persistence/Migrations'
 
@@ -37,60 +36,66 @@ $created = 0
 $skipped = 0
 $failed = 0
 
-foreach ($module in $Modules) {
-    Write-Host (' [{0,-18}] : ' -f $module.Name) -NoNewline
+Push-Location $RepoRoot
+try {
+    foreach ($module in $Modules) {
+        Write-Host (' [{0,-18}] : ' -f $module.Name) -NoNewline
 
-    if (-not (Test-Path $module.Project)) {
-        Write-Host 'SKIPPED (project file not found)' -ForegroundColor $Yellow
-        $skipped++
-        continue
-    }
+        if (-not (Test-Path $module.Project)) {
+            Write-Host 'SKIPPED (project file not found)' -ForegroundColor $Yellow
+            $skipped++
+            continue
+        }
 
-    $output = & dotnet ef migrations has-pending-model-changes `
-        --context $module.Context `
-        --project $module.Project `
-        2>&1
+        $output = & dotnet ef migrations has-pending-model-changes `
+            --context $module.Context `
+            --project $module.Project `
+            2>&1
 
-    $exitCode = $LASTEXITCODE
-    $outputText = $output -join "`n"
+        $exitCode = $LASTEXITCODE
+        $outputText = $output -join "`n"
 
-    if ($exitCode -eq 0) {
-        Write-Host 'no changes' -ForegroundColor $Yellow
-        $skipped++
-        continue
-    }
+        if ($exitCode -eq 0) {
+            Write-Host 'no changes' -ForegroundColor $Yellow
+            $skipped++
+            continue
+        }
 
-    if ($outputText -match 'No DbContext named|Unable to create|Build failed') {
-        Write-Host 'ERROR' -ForegroundColor $Red
-        Write-Host $outputText -ForegroundColor 'Gray'
+        if ($outputText -match 'No DbContext named|Unable to create|Build failed') {
+            Write-Host 'ERROR' -ForegroundColor $Red
+            Write-Host $outputText -ForegroundColor 'Gray'
+            $failed++
+            continue
+        }
+
+        Write-Host 'CHANGES DETECTED! Creating migration...' -ForegroundColor $Cyan
+
+        $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
+        $migrationName = "Auto_$timestamp"
+
+        $addOutput = & dotnet ef migrations add $migrationName `
+            --context $module.Context `
+            --project $module.Project `
+            --output-dir $MigrationsOutputDir `
+            2>&1
+
+        $addExitCode = $LASTEXITCODE
+
+        Write-Host (' [{0,-18}] : ' -f $module.Name) -NoNewline
+
+        if ($addExitCode -eq 0) {
+            Write-Host "SUCCESS ($migrationName)" -ForegroundColor $Green
+            $created++
+            continue
+        }
+
+        Write-Host 'ERROR (Failed to generate migration)' -ForegroundColor $Red
+        Write-Host ($addOutput -join "`n") -ForegroundColor 'Gray'
         $failed++
-        continue
     }
-
-    Write-Host 'CHANGES DETECTED! Creating migration...' -ForegroundColor $Cyan
-
-    $timestamp = Get-Date -Format 'yyyyMMdd_HHmmss'
-    $migrationName = "Auto_$timestamp"
-
-    $addOutput = & dotnet ef migrations add $migrationName `
-        --context $module.Context `
-        --project $module.Project `
-        --output-dir $MigrationsOutputDir `
-        2>&1
-
-    $addExitCode = $LASTEXITCODE
-
-    Write-Host (' [{0,-18}] : ' -f $module.Name) -NoNewline
-
-    if ($addExitCode -eq 0) {
-        Write-Host "SUCCESS ($migrationName)" -ForegroundColor $Green
-        $created++
-        continue
-    }
-
-    Write-Host 'ERROR (Failed to generate migration)' -ForegroundColor $Red
-    Write-Host ($addOutput -join "`n") -ForegroundColor 'Gray'
-    $failed++
+}
+finally {
+    Pop-Location
 }
 
 Write-Host "`n========================================"

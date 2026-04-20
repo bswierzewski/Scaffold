@@ -19,7 +19,10 @@
   <Folder Name="/src/backend/Bootstrappers/">
     <Project Path="src/backend/Bootstrappers/Scaffold.Api/Scaffold.Api.csproj" />
   </Folder>
-  <Folder Name="/src/backend/Modules/" />
+  <Folder Name="/src/backend/Modules/">
+    <Project Path="src/backend/BuildingBlocks/Modules/Identity/BuildingBlocks.Identity.Contracts/BuildingBlocks.Identity.Contracts.csproj" />
+    <Project Path="src/backend/BuildingBlocks/Modules/Identity/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj" />
+  </Folder>
   <Folder Name="/src/backend/BuildingBlocks/">
     <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />
     <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Hosting/BuildingBlocks.Hosting.csproj" />
