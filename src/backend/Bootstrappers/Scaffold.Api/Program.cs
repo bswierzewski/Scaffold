@@ -1,8 +1,9 @@
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
-using BuildingBlocks.Infrastructure.Extensions;
+using BuildingBlocks.Infrastructure.Exceptions.ProblemDetails;
 using BuildingBlocks.Infrastructure.Modules;
+using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
