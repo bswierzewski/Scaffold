@@ -1,4 +1,4 @@
-using BuildingBlocks.Core.Modules;
+using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Extensions;
