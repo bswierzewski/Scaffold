@@ -7,7 +7,6 @@ using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using BuildingBlocks.Identity;
-using BuildingBlocks.Identity.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,8 +49,6 @@ IModule[] modules =
 // Let each module register its container services explicitly at the composition root.
 foreach (var module in modules)
     module.AddServices(builder.Services, builder.Configuration);
-
-builder.Services.AddClerkJwt(builder.Configuration);
 
 var dataSource = builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
 
