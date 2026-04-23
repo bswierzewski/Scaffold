@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.Extensions.Configuration;
+using Alba;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
@@ -13,23 +11,19 @@ namespace Scaffold.Tests.Integration.Shared;
 /// </summary>
 public sealed class ScaffoldEnvironment : IAsyncLifetime
 {
-    private const string DefaultConnectionStringEnvironmentVariable = "ConnectionStrings__Default";
 
     private PostgreSqlContainer _database = default!;
     private Respawner _respawner = default!;
     private NpgsqlConnection _resetConnection = default!;
+    private IAlbaHost _host = default!;
 
-    public WebApplicationFactory<Program> Factory { get; private set; } = default!;
-
-    public IServiceProvider Services => Factory.Services;
-
-    public string ConnectionString => _database.GetConnectionString();
+    public IServiceProvider Services => _host.Services;
 
     /// <summary>
     /// Creates an HTTP client bound to the in-memory API host.
     /// </summary>
     public HttpClient CreateClient()
-        => Factory.CreateClient();
+        => _host.Server.CreateClient();
 
     /// <summary>
     /// Starts the PostgreSQL container, boots the API and prepares Respawn for fast database resets.
@@ -41,26 +35,22 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
             .WithDatabase("scaffold_integration")
             .WithUsername("postgres")
             .WithPassword("postgres")
+            .WithPortBinding(5432, 5432)
             .Build();
 
         await _database.StartAsync();
 
-        Environment.SetEnvironmentVariable(DefaultConnectionStringEnvironmentVariable, _database.GetConnectionString());
-
-        Factory = new IntegrationTestWebApplicationFactory(_database.GetConnectionString());
+        _host = await AlbaHost.For<Program>();
 
         _ = CreateClient();
 
-        _resetConnection = new NpgsqlConnection(_database.GetConnectionString());
+        _resetConnection = new NpgsqlConnection(ConnectionString);
         await _resetConnection.OpenAsync();
 
         _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore =
-            [
-                new Table("identity", "__EFMigrationsHistory")
-            ]
+            TablesToIgnore = [ "__EFMigrationsHistory" ] 
         });
     }
 
@@ -75,31 +65,13 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
     /// </summary>
     public async ValueTask DisposeAsync()
     {
-        if (Factory is not null)
-            await Factory.DisposeAsync();
+        if (_host is not null)
+            await _host.DisposeAsync();
 
         if (_resetConnection is not null)
             await _resetConnection.DisposeAsync();
 
         if (_database is not null)
             await _database.DisposeAsync();
-
-        Environment.SetEnvironmentVariable(DefaultConnectionStringEnvironmentVariable, null);
-    }
-
-    private sealed class IntegrationTestWebApplicationFactory(string connectionString) : WebApplicationFactory<Program>
-    {
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
-        {
-            builder.UseEnvironment("Development");
-
-            builder.ConfigureAppConfiguration((_, configurationBuilder) =>
-            {
-                configurationBuilder.AddInMemoryCollection(new Dictionary<string, string?>
-                {
-                    ["ConnectionStrings:Default"] = connectionString
-                });
-            });
-        }
     }
 }

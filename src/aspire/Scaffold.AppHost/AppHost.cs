@@ -3,6 +3,9 @@ var builder = DistributedApplication.CreateBuilder(args);
 // Add PostgreSQL database container
 var postgres = builder.AddPostgres("postgres")
     .WithImage("postgres", "18-alpine")
+    .WithEnvironment("POSTGRES_USER", "postgres")
+    .WithEnvironment("POSTGRES_PASSWORD", "postgres")
+    .WithEndpoint(5432, 5432, "tcp")
     //.WithDataVolume() // Persist data between restarts
     .WithPgWeb(); // GUI for managing the database
 
