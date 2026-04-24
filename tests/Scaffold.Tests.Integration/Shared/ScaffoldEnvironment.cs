@@ -1,57 +1,45 @@
 using Alba;
+using Aspire.Hosting;
+using Aspire.Hosting.Testing;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
-using Testcontainers.PostgreSql;
+using Scaffold.AppHost;
 
 namespace Scaffold.Tests.Integration.Shared;
 
 /// <summary>
-/// Shared runtime environment for API integration tests backed by an ephemeral PostgreSQL container.
+/// Shared runtime environment for API integration tests backed by an Aspire-managed PostgreSQL database.
 /// </summary>
 public sealed class ScaffoldEnvironment : IAsyncLifetime
 {
-
-    private PostgreSqlContainer _database = default!;
     private Respawner _respawner = default!;
     private NpgsqlConnection _resetConnection = default!;
-    private IAlbaHost _host = default!;
 
-    public IServiceProvider Services => _host.Services;
-
-    /// <summary>
-    /// Creates an HTTP client bound to the in-memory API host.
-    /// </summary>
-    public HttpClient CreateClient()
-        => _host.Server.CreateClient();
+    public DistributedApplication App { get; private set; } = default!;
+    public IAlbaHost Host { get; private set; } = default!;
 
     /// <summary>
-    /// Starts the PostgreSQL container, boots the API and prepares Respawn for fast database resets.
+    /// Starts the Aspire-managed PostgreSQL database, boots the API and prepares Respawn for fast database resets.
     /// </summary>
     public async ValueTask InitializeAsync()
     {
-        _database = new PostgreSqlBuilder()
-            .WithImage("postgres:18-alpine")
-            .WithDatabase("scaffold_integration")
-            .WithUsername("postgres")
-            .WithPassword("postgres")
-            .WithPortBinding(5432, 5432)
-            .Build();
+        var builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Scaffold_AppHost>(
+            [ 
+                "Tests:DatabaseOnly=true"
+            ]);
 
-        await _database.StartAsync();
+        App = await builder.BuildAsync();
+        await App.StartAsync();
 
-        _host = await AlbaHost.For<Program>();
+        await App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.Database)
+            .WaitAsync(TimeSpan.FromMinutes(3));
+        
+        await InitializeDatabaseConnectionAsync();
+        
+        await InitializeRespawnerAsync();
 
-        _ = CreateClient();
-
-        _resetConnection = new NpgsqlConnection(ConnectionString);
-        await _resetConnection.OpenAsync();
-
-        _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
-        {
-            DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore = [ "__EFMigrationsHistory" ] 
-        });
+        Host = await AlbaHost.For<Program>();
     }
 
     /// <summary>
@@ -61,17 +49,36 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         => _respawner.ResetAsync(_resetConnection);
 
     /// <summary>
-    /// Disposes the API host, reset connection and PostgreSQL container.
+    /// Disposes the API host, reset connection and Aspire database application.
     /// </summary>
     public async ValueTask DisposeAsync()
     {
-        if (_host is not null)
-            await _host.DisposeAsync();
+        if (Host is not null)
+            await Host.DisposeAsync();
 
         if (_resetConnection is not null)
             await _resetConnection.DisposeAsync();
 
-        if (_database is not null)
-            await _database.DisposeAsync();
+        if (App is not null)
+            await App.DisposeAsync();
+    }
+
+    private async Task InitializeDatabaseConnectionAsync()
+    {
+        var connectionString = App.GetConnectionString(ResourceNames.Database) ?? throw new InvalidOperationException($"Connection string for '{ResourceNames.Database}' resource was not found.");
+
+        Environment.SetEnvironmentVariable("ConnectionStrings__Default", connectionString);
+
+        _resetConnection = new NpgsqlConnection(connectionString);
+        await _resetConnection.OpenAsync();
+    }
+
+    private async Task InitializeRespawnerAsync()
+    {
+        _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
+        {
+            DbAdapter = DbAdapter.Postgres,
+            TablesToIgnore = [ "__EFMigrationsHistory" ]
+        });
     }
 }

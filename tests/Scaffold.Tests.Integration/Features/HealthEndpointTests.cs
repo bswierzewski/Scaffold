@@ -9,7 +9,7 @@ public sealed class HealthEndpointTests(ScaffoldEnvironment environment)
     [Fact]
     public async Task Health_endpoint_returns_success()
     {
-        using var client = environment.CreateClient();
+        using var client = environment.App.CreateClient();
 
         using var response = await client.GetAsync("/health", TestContext.Current.CancellationToken);
 

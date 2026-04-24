@@ -1,4 +1,3 @@
-using DotNetEnv;
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
@@ -8,8 +7,6 @@ using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using BuildingBlocks.Identity;
-
-Env.Load(Path.Combine(AppContext.BaseDirectory, ".env"));
 
 var builder = WebApplication.CreateBuilder(args);
 

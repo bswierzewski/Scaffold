@@ -10,6 +10,7 @@
     <!-- Aspire / hosting -->
     <PackageVersion Include="Aspire.Hosting.Docker" Version="13.2.1" />
     <PackageVersion Include="Aspire.Hosting.JavaScript" Version="13.2.1" />
+    <PackageVersion Include="Aspire.Hosting.Testing" Version="13.2.2" />
     <PackageVersion Include="Aspire.Hosting.PostgreSQL" Version="13.2.1" />
     <PackageVersion Include="Aspire.Hosting.Yarp" Version="13.2.1" />
 
@@ -19,9 +20,13 @@
     <!-- Entity Framework Core -->
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
 
+    <!-- Data access -->
+    <PackageVersion Include="Npgsql" Version="10.0.0" />
+
     <!-- Test tooling -->
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageVersion Include="Respawn" Version="7.0.0" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
 

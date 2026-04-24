@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
+using Scaffold.AppHost;
 using Xunit;
 
 namespace Scaffold.Tests.E2E.Shared;
@@ -26,38 +27,19 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
     {
         var builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Scaffold_AppHost>();
 
-        builder.Services.AddLogging(logging =>
-        {
-            logging.SetMinimumLevel(LogLevel.Debug);
-            logging.AddFilter("Aspire.", LogLevel.Debug);
-        });
-
-        builder.Services.ConfigureHttpClientDefaults(clientBuilder =>
-        {
-            clientBuilder.AddStandardResilienceHandler();
-        });
-
         App = await builder.BuildAsync();
         await App.StartAsync();
 
         await Task.WhenAll(
-                App.ResourceNotifications.WaitForResourceHealthyAsync("db"),
-                App.ResourceNotifications.WaitForResourceHealthyAsync("app"),
-                App.ResourceNotifications.WaitForResourceHealthyAsync("api"),
-                App.ResourceNotifications.WaitForResourceHealthyAsync("gateway"))
+            App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.Database),
+            App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.App),
+            App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.Api),
+            App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.Gateway))
             .WaitAsync(TimeSpan.FromMinutes(3));
 
-        var connectionString = App.GetConnectionString("db")
-            ?? throw new InvalidOperationException("Connection string for 'db' resource was not found.");
+        await InitializeDatabaseConnectionAsync();
 
-        _resetConnection = new NpgsqlConnection(connectionString);
-        await _resetConnection.OpenAsync();
-
-        _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
-        {
-            DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore = ["__EFMigrationsHistory"]
-        });
+        await InitializeRespawnerAsync();
     }
 
     /// <summary>
@@ -77,4 +59,23 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         if (App is not null)
             await App.DisposeAsync();
     }
+
+    private async Task InitializeDatabaseConnectionAsync()
+    {
+        var connectionString = App.GetConnectionString(ResourceNames.Database)
+            ?? throw new InvalidOperationException($"Connection string for '{ResourceNames.Database}' resource was not found.");
+
+        _resetConnection = new NpgsqlConnection(connectionString);
+        await _resetConnection.OpenAsync();
+    }
+
+    private async Task InitializeRespawnerAsync()
+    {
+        _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
+        {
+            DbAdapter = DbAdapter.Postgres,
+            TablesToIgnore = [ "__EFMigrationsHistory" ]
+        });
+    }
+
 }
