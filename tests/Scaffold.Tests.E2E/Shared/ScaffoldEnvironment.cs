@@ -62,7 +62,7 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
 
     private async Task InitializeDatabaseConnectionAsync()
     {
-        var connectionString = App.GetConnectionString(ResourceNames.Database)
+        var connectionString = await App.GetConnectionStringAsync(ResourceNames.Database)
             ?? throw new InvalidOperationException($"Connection string for '{ResourceNames.Database}' resource was not found.");
 
         _resetConnection = new NpgsqlConnection(connectionString);
@@ -74,7 +74,7 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore = [ "__EFMigrationsHistory" ]
+            TablesToIgnore = ["__EFMigrationsHistory"]
         });
     }
 

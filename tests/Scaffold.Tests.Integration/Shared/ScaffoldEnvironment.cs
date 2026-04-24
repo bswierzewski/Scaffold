@@ -1,7 +1,6 @@
 using Alba;
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
-using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
@@ -26,7 +25,7 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
     public async ValueTask InitializeAsync()
     {
         var builder = await DistributedApplicationTestingBuilder.CreateAsync<Projects.Scaffold_AppHost>(
-            [ 
+            [
                 "Tests:DatabaseOnly=true"
             ]);
 
@@ -35,18 +34,12 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
 
         await App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.Database)
             .WaitAsync(TimeSpan.FromMinutes(3));
-        
-        await InitializeDatabaseConnectionAsync();
-        
-        await InitializeRespawnerAsync();
 
-        Host = await AlbaHost.For<Program>(
-            extensions: [
-                ConfigurationOverride.Create(new Dictionary<string, string?>
-                {
-                    ["ConnectionStrings:Default"] = _resetConnection.ConnectionString
-                })
-            ]);
+        await InitializeDatabaseConnectionAsync();
+
+        Host = await AlbaHost.For<Scaffold.Api.Program>();
+
+        await InitializeRespawnerAsync();
     }
 
     /// <summary>
@@ -72,7 +65,10 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
 
     private async Task InitializeDatabaseConnectionAsync()
     {
-        var connectionString = App.GetConnectionString(ResourceNames.Database) ?? throw new InvalidOperationException($"Connection string for '{ResourceNames.Database}' resource was not found.");
+        var connectionString = await App.GetConnectionStringAsync(ResourceNames.Database)
+            ?? throw new InvalidOperationException($"Connection string for '{ResourceNames.Database}' resource was not found.");
+
+        Environment.SetEnvironmentVariable("ConnectionStrings__Default", connectionString);
 
         _resetConnection = new NpgsqlConnection(connectionString);
         await _resetConnection.OpenAsync();
@@ -83,7 +79,7 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
         {
             DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore = [ "__EFMigrationsHistory" ]
+            TablesToIgnore = ["__EFMigrationsHistory"]
         });
     }
 }
