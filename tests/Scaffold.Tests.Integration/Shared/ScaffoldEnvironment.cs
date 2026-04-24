@@ -1,6 +1,7 @@
 using Alba;
 using Aspire.Hosting;
 using Aspire.Hosting.Testing;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using Respawn;
 using Respawn.Graph;
@@ -39,7 +40,13 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         
         await InitializeRespawnerAsync();
 
-        Host = await AlbaHost.For<Program>();
+        Host = await AlbaHost.For<Program>(
+            extensions: [
+                ConfigurationOverride.Create(new Dictionary<string, string?>
+                {
+                    ["ConnectionStrings:Default"] = _resetConnection.ConnectionString
+                })
+            ]);
     }
 
     /// <summary>
@@ -66,8 +73,6 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
     private async Task InitializeDatabaseConnectionAsync()
     {
         var connectionString = App.GetConnectionString(ResourceNames.Database) ?? throw new InvalidOperationException($"Connection string for '{ResourceNames.Database}' resource was not found.");
-
-        Environment.SetEnvironmentVariable("ConnectionStrings__Default", connectionString);
 
         _resetConnection = new NpgsqlConnection(connectionString);
         await _resetConnection.OpenAsync();
