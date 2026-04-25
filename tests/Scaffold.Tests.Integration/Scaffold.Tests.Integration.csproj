@@ -18,6 +18,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\src\backend\Bootstrappers\Scaffold.Api\Scaffold.Api.csproj" />
         <ProjectReference Include="..\..\src\backend\BuildingBlocks\BuildingBlocks.Tests\BuildingBlocks.Tests.csproj" />
+        <ProjectReference Include="..\..\src\backend\Modules\Catalog\Scaffold.Modules.Catalog\Scaffold.Modules.Catalog.csproj" />
     </ItemGroup>
 
     <ItemGroup>

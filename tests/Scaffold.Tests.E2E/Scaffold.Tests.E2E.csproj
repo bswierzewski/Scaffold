@@ -19,6 +19,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\backend\BuildingBlocks\BuildingBlocks.Tests\BuildingBlocks.Tests.csproj" />
     <ProjectReference Include="..\..\src\Aspire\Scaffold.AppHost\Scaffold.AppHost.csproj" />
+    <ProjectReference Include="..\..\src\backend\Modules\Catalog\Scaffold.Modules.Catalog\Scaffold.Modules.Catalog.csproj" />
   </ItemGroup>
 
   <ItemGroup>
