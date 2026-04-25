@@ -10,10 +10,21 @@ namespace Scaffold.Tests.E2E.Shared;
 /// </summary>
 public sealed class ScaffoldEnvironment : IAsyncLifetime
 {
+    // Runtime state
     private Respawner _respawner = default!;
     private NpgsqlConnection _resetConnection = default!;
 
+    /// <summary>
+    /// The started distributed application used by end-to-end tests.
+    /// </summary>
     public DistributedApplication App { get; private set; } = default!;
+
+    /// <summary>
+    /// HTTP client targeting the gateway resource.
+    /// </summary>
+    public HttpClient GatewayHttpClient { get; private set; } = default!;
+
+    // Lifecycle
 
     /// <summary>
     /// Builds and starts the distributed application used by this test collection.
@@ -32,8 +43,9 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
             App.ResourceNotifications.WaitForResourceHealthyAsync(ResourceNames.Gateway))
             .WaitAsync(TimeSpan.FromMinutes(3));
 
-        await InitializeDatabaseConnectionAsync();
+        InitializeHttpsClients();
 
+        await InitializeDatabaseConnectionAsync();
         await InitializeRespawnerAsync();
     }
 
@@ -48,6 +60,9 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
     /// </summary>
     public async ValueTask DisposeAsync()
     {
+        if (GatewayHttpClient is not null)
+            GatewayHttpClient.Dispose();
+
         if (_resetConnection is not null)
             await _resetConnection.DisposeAsync();
 
@@ -55,6 +70,19 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
             await App.DisposeAsync();
     }
 
+    // Initialization helpers
+
+    /// <summary>
+    /// Creates the HTTPS client used to call the gateway during end-to-end tests.
+    /// </summary>
+    private void InitializeHttpsClients()
+    {
+        GatewayHttpClient = App.CreateHttpClient(ResourceNames.Gateway, "https");
+    }
+
+    /// <summary>
+    /// Opens a database connection using the connection string exposed by the Aspire database resource.
+    /// </summary>
     private async Task InitializeDatabaseConnectionAsync()
     {
         var connectionString = await App.GetConnectionStringAsync(ResourceNames.Database)
@@ -64,6 +92,9 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         await _resetConnection.OpenAsync();
     }
 
+    /// <summary>
+    /// Creates the Respawn checkpoint used to reset the database between tests.
+    /// </summary>
     private async Task InitializeRespawnerAsync()
     {
         _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
@@ -72,5 +103,4 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
             TablesToIgnore = ["__EFMigrationsHistory"]
         });
     }
-
 }

@@ -24,11 +24,6 @@ var app = builder.AddViteApp(ResourceNames.App, "../../frontend")
 builder.AddYarp(ResourceNames.Gateway)
     .WithHttpsEndpoint()
     .WithHttpsDeveloperCertificate()
-    .WithEndpoint("http", endpoint =>
-    {
-        endpoint.IsExternal = false;
-        endpoint.ExcludeReferenceEndpoint = true;
-    })
     .WaitFor(api)
     .WaitFor(app)
     .WithHttpHealthCheck("/")
