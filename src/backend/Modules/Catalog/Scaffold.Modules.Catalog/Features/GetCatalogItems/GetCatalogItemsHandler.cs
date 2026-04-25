@@ -8,7 +8,7 @@ namespace Scaffold.Modules.Catalog.Features.GetCatalogItems;
 
 public sealed class GetCatalogItemsHandler
 {
-    [WolverineGet("/catalog/items")]
+    [WolverineGet("/api/catalog/items")]
     [Tags("Catalog")]
     [EndpointName("GetCatalogItems")]
     [EndpointSummary("Get all catalog items")]

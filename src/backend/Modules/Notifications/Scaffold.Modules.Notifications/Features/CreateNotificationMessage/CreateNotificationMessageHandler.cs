@@ -9,7 +9,7 @@ namespace Scaffold.Modules.Notifications.Features.CreateNotificationMessage;
 
 public sealed class CreateNotificationMessageHandler
 {
-    [WolverinePost("/notifications/messages")]
+    [WolverinePost("/api/notifications/messages")]
     [Tags("Notifications")]
     [EndpointName("CreateNotificationMessage")]
     [EndpointSummary("Create a notification message")]

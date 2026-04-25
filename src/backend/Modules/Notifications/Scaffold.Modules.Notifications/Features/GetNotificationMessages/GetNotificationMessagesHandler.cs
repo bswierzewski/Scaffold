@@ -8,7 +8,7 @@ namespace Scaffold.Modules.Notifications.Features.GetNotificationMessages;
 
 public sealed class GetNotificationMessagesHandler
 {
-    [WolverineGet("/notifications/messages")]
+    [WolverineGet("/api/notifications/messages")]
     [Tags("Notifications")]
     [EndpointName("GetNotificationMessages")]
     [EndpointSummary("Get all notification messages")]

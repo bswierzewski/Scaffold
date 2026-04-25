@@ -9,7 +9,7 @@ namespace Scaffold.Modules.Catalog.Features.CreateCatalogItem;
 
 public sealed class CreateCatalogItemHandler
 {
-    [WolverinePost("/catalog/items")]
+    [WolverinePost("/api/catalog/items")]
     [Tags("Catalog")]
     [EndpointName("CreateCatalogItem")]
     [EndpointSummary("Create a catalog item")]
