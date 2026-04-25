@@ -1,0 +1,9 @@
+namespace Scaffold.Modules.Catalog.Infrastructure.Services;
+
+public sealed class ConsolePrinter : IPrinter
+{
+    public void Print(string message)
+    {
+        Console.WriteLine(message);
+    }
+}

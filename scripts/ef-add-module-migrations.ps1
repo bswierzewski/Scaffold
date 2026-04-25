@@ -25,6 +25,16 @@ $Modules = @(
         Name = 'Identity'
         Context = 'IdentityDbContext'
         Project = 'src/backend/BuildingBlocks/Modules/Identity/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj'
+    },
+    [pscustomobject]@{
+        Name = 'Catalog'
+        Context = 'CatalogDbContext'
+        Project = 'src/backend/Modules/Catalog/Scaffold.Modules.Catalog/Scaffold.Modules.Catalog.csproj'
+    },
+    [pscustomobject]@{
+        Name = 'Notifications'
+        Context = 'NotificationsDbContext'
+        Project = 'src/backend/Modules/Notifications/Scaffold.Modules.Notifications/Scaffold.Modules.Notifications.csproj'
     }
 )
 

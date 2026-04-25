@@ -22,6 +22,8 @@
   <Folder Name="/src/backend/Modules/">
     <Project Path="src/backend/BuildingBlocks/Modules/Identity/BuildingBlocks.Identity.Contracts/BuildingBlocks.Identity.Contracts.csproj" />
     <Project Path="src/backend/BuildingBlocks/Modules/Identity/BuildingBlocks.Identity/BuildingBlocks.Identity.csproj" />
+    <Project Path="src/backend/Modules/Catalog/Scaffold.Modules.Catalog/Scaffold.Modules.Catalog.csproj" />
+    <Project Path="src/backend/Modules/Notifications/Scaffold.Modules.Notifications/Scaffold.Modules.Notifications.csproj" />
   </Folder>
   <Folder Name="/src/backend/BuildingBlocks/">
     <Project Path="src/backend/BuildingBlocks/BuildingBlocks.Core/BuildingBlocks.Core.csproj" />

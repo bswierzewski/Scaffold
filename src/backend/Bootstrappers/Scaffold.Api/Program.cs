@@ -7,6 +7,8 @@ using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
+using Scaffold.Modules.Catalog;
+using Scaffold.Modules.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,7 +45,9 @@ builder.Services.AddOpenApi(options =>
 // and expose their Wolverine handlers/endpoints.
 IModule[] modules =
 [
-    new IdentityModule()
+    new IdentityModule(),
+    new CatalogModule(),
+    new NotificationsModule()
 ];
 
 foreach (var module in modules)
