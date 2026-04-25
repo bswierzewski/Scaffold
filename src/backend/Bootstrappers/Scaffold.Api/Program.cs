@@ -46,6 +46,9 @@ IModule[] modules =
     new IdentityModule()
 ];
 
+foreach (var module in modules)
+    builder.Services.AddSingleton(typeof(IModule), module);
+
 // Let each module register its container services explicitly at the composition root.
 foreach (var module in modules)
     module.AddServices(builder.Services, builder.Configuration);
