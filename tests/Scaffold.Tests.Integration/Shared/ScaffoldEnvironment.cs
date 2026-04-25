@@ -1,18 +1,17 @@
 using Alba;
 using BuildingBlocks.Tests.Integration.Containers;
-using Npgsql;
-using Respawn;
+using BuildingBlocks.Tests.Shared;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Scaffold.Tests.Integration.Shared;
 
 /// <summary>
 /// Shared runtime environment for API integration tests backed by a PostgreSQL Testcontainer.
 /// </summary>
-public sealed class ScaffoldEnvironment : IAsyncLifetime
+public class ScaffoldEnvironment : IAsyncLifetime
 {
     private readonly PostgresTestContainer _database = new();
-    private Respawner _respawner = default!;
-    private NpgsqlConnection _resetConnection = default!;
+    private readonly DatabaseRespawner _databaseRespawner = new();
 
     public IAlbaHost Host { get; private set; } = default!;
 
@@ -26,10 +25,10 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         Host = await AlbaHost.For<Program>(builder =>
         {
             builder.UseSetting("ConnectionStrings:Default", _database.ConnectionString);
+            builder.ConfigureServices((_, services) => ConfigureTestServices(services));
         });
 
-        _resetConnection = await _database.OpenConnectionAsync();
-        await InitializeRespawnerAsync();
+        await _databaseRespawner.InitializeAsync(_database.ConnectionString);
     }
 
     /// <summary>
@@ -40,24 +39,21 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         if (Host is not null)
             await Host.DisposeAsync();
 
-        if (_resetConnection is not null)
-            await _resetConnection.DisposeAsync();
+        await _databaseRespawner.DisposeAsync();
 
         await _database.DisposeAsync();
-    }
-
-    private async Task InitializeRespawnerAsync()
-    {
-        _respawner = await Respawner.CreateAsync(_resetConnection, new RespawnerOptions
-        {
-            DbAdapter = DbAdapter.Postgres,
-            TablesToIgnore = ["__EFMigrationsHistory"]
-        });
     }
 
     /// <summary>
     /// Resets the database to a clean state while preserving the applied migration history.
     /// </summary>
     public Task ResetDatabaseAsync()
-        => _respawner.ResetAsync(_resetConnection);
+        => _databaseRespawner.ResetAsync();
+
+    /// <summary>
+    /// Allows derived fixtures to replace or add service registrations before the host is built.
+    /// </summary>
+    protected virtual void ConfigureTestServices(IServiceCollection services)
+    {
+    }
 }
