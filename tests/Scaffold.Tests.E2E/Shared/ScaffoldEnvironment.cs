@@ -1,12 +1,7 @@
 using Aspire.Hosting;
-using Aspire.Hosting.Testing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Npgsql;
 using Respawn;
-using Respawn.Graph;
 using Scaffold.AppHost;
-using Xunit;
 
 namespace Scaffold.Tests.E2E.Shared;
 
