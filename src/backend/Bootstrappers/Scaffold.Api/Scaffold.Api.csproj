@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Hosting\BuildingBlocks.Hosting.csproj" />
-    <ProjectReference Include="..\..\BuildingBlocks\Modules\Identity\BuildingBlocks.Identity\BuildingBlocks.Identity.csproj" />
     <ProjectReference Include="..\..\BuildingBlocks\BuildingBlocks.Infrastructure\BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Modules\Catalog\Scaffold.Modules.Catalog\Scaffold.Modules.Catalog.csproj" />
     <ProjectReference Include="..\..\Modules\Notifications\Scaffold.Modules.Notifications\Scaffold.Modules.Notifications.csproj" />

@@ -1,8 +1,8 @@
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting;
-using BuildingBlocks.Identity;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
+using BuildingBlocks.Infrastructure.Identity;
 using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
@@ -41,11 +41,13 @@ builder.Services.AddOpenApi(options =>
     options.AddProblemDetailsResponses();
 });
 
+// Add user identity services and authentication/authorization middleware with JWT bearer support.
+builder.Services.AddIdentity();
+
 // Lists application modules explicitly so the bootstrapper can register their services
 // and expose their Wolverine handlers/endpoints.
 IModule[] modules =
 [
-    new IdentityModule(),
     new CatalogModule(),
     new NotificationsModule()
 ];
