@@ -15,6 +15,7 @@ public sealed class NotificationsModule : IModule
     {
         services.AddScoped<IPrinter, ConsolePrinter>();
         services.AddPostgres<NotificationsDbContext>(NotificationsDbContext.SchemaName);
+        services.AddSingleton<IRolePermissionProvider, NotificationsRolePermissionProvider>();
     }
 
     public async Task InitializeMigrationsAsync(IServiceProvider services, CancellationToken cancellationToken = default)

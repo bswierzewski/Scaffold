@@ -15,6 +15,7 @@ public sealed class CatalogModule : IModule
     {
         services.AddScoped<IPrinter, ConsolePrinter>();
         services.AddPostgres<CatalogDbContext>(CatalogDbContext.SchemaName);
+        services.AddSingleton<IRolePermissionProvider, CatalogRolePermissionProvider>();
     }
 
     public async Task InitializeMigrationsAsync(IServiceProvider services, CancellationToken cancellationToken = default)
