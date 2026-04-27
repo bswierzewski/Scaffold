@@ -7,6 +7,7 @@ using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
+using Scaffold.Api.Authorization;
 using Scaffold.Modules.Catalog;
 using Scaffold.Modules.Notifications;
 
@@ -40,6 +41,8 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddProblemDetailsResponses();
 });
+
+builder.Services.AddSingleton<RolePermissionMap, ScaffoldRolePermissionMap>();
 
 // Add user identity services and authentication/authorization middleware with JWT bearer support.
 builder.Services.AddIdentity();
