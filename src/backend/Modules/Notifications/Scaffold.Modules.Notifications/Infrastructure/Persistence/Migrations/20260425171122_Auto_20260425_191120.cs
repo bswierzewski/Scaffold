@@ -23,9 +23,9 @@ namespace Scaffold.Modules.Notifications.Infrastructure.Persistence.Migrations
                     Title = table.Column<string>(type: "text", nullable: false),
                     Body = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {

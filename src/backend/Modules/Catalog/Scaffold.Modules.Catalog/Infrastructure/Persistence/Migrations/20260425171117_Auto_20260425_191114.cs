@@ -24,9 +24,9 @@ namespace Scaffold.Modules.Catalog.Infrastructure.Persistence.Migrations
                     Sku = table.Column<string>(type: "text", nullable: false),
                     Price = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
                     ModifiedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    ModifiedBy = table.Column<Guid>(type: "uuid", nullable: true)
+                    ModifiedBy = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
