@@ -4,6 +4,9 @@ namespace Scaffold.Modules.Catalog;
 
 public static class CatalogPermissions
 {
-    public static readonly Permission ReadItems = new("catalog.items.read", "Read catalog items");
-    public static readonly Permission ManageItems = new("catalog.items.write", "Manage catalog items");
+    public const string ReadItemsCode = "catalog.items.read";
+    public const string ManageItemsCode = "catalog.items.write";
+
+    public static readonly Permission ReadItems = new(ReadItemsCode, "Read catalog items");
+    public static readonly Permission ManageItems = new(ManageItemsCode, "Manage catalog items");
 }

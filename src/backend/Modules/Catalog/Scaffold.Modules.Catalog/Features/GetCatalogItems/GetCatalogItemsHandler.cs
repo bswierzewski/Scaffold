@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ public sealed class GetCatalogItemsHandler
     [Tags("Catalog")]
     [EndpointName("GetCatalogItems")]
     [EndpointSummary("Get all catalog items")]
+    [Authorize(Permissions = [CatalogPermissions.ReadItemsCode])]
     public static async Task<List<GetCatalogItemsResponse>> Handle(
         CatalogDbContext dbContext,
         CancellationToken ct)

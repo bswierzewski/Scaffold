@@ -7,6 +7,7 @@ using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
+using Scalar.AspNetCore;
 using Scaffold.Modules.Catalog;
 using Scaffold.Modules.Notifications;
 
@@ -39,6 +40,7 @@ builder.Services.AddProblemDetails(options =>
 builder.Services.AddOpenApi(options =>
 {
     options.AddProblemDetailsResponses();
+    options.AddBearerSecurityScheme();
 });
 
 // Add user identity services and authentication/authorization middleware with JWT bearer support.
@@ -73,6 +75,9 @@ if (app.Environment.IsDevelopment())
 {
     // Exposes the generated OpenAPI document only in development.
     app.MapOpenApi();
+
+    // Scalar UI with JWT authorize support: http://localhost:7000/scalar/v1
+    app.MapScalarApiReference();
 }
 
 // Enables the global exception handler middleware registered earlier.

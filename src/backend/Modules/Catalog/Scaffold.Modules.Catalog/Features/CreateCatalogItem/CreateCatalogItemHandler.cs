@@ -1,3 +1,4 @@
+using BuildingBlocks.Core.Attributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Scaffold.Modules.Catalog.Domain.Aggregates;
@@ -13,6 +14,8 @@ public sealed class CreateCatalogItemHandler
     [Tags("Catalog")]
     [EndpointName("CreateCatalogItem")]
     [EndpointSummary("Create a catalog item")]
+    [PayloadLogging]
+    [Authorize(Permissions = [CatalogPermissions.ManageItemsCode])]
     public static async Task<CreateCatalogItemResponse> Handle(
         CreateCatalogItemCommand command,
         CatalogDbContext dbContext,
