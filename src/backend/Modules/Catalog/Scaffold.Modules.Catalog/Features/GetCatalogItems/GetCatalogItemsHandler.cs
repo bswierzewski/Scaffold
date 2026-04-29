@@ -1,4 +1,4 @@
-using BuildingBlocks.Core.Attributes;
+using BuildingBlocks.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
