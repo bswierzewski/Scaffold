@@ -5,9 +5,6 @@
     <File Path="Directory.Build.props" />
     <File Path="Directory.Packages.props" />
   </Folder>
-  <Folder Name="/openapi/">
-    <File Path="openapi/Scaffold.Api.json" />
-  </Folder>
   <Folder Name="/scripts/">
     <File Path="scripts/README.MD" />
   </Folder>
