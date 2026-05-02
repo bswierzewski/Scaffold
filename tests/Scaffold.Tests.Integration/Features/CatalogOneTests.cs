@@ -1,10 +1,11 @@
-using System.Net;
-using System.Net.Http.Json;
+using BuildingBlocks.Tests.Integration.Extensions;
+using BuildingBlocks.Tests.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Scaffold.Modules.Catalog.Domain.Aggregates;
 using Scaffold.Modules.Catalog.Features.GetCatalogItems;
 using Scaffold.Modules.Catalog.Infrastructure.Persistence;
 using Scaffold.Tests.Integration.Shared;
+using System.Net;
 
 namespace Scaffold.Tests.Integration.Features;
 
@@ -27,11 +28,15 @@ public sealed class CatalogOneTests(ScaffoldEnvironment environment)
     [Fact]
     public async Task Get_catalog_items_returns_shared_and_class_product()
     {
-        using var client = Environment.Host.Server.CreateClient();
-        using var response = await client.GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
-        var items = await response.Content.ReadFromJsonAsync<List<GetCatalogItemsResponse>>(TestContext.Current.CancellationToken);
+        var result = await Environment.Host.Scenario(api =>
+        {
+            api.As(CatalogReaderUser);
+            api.Get.Url("/api/catalog/items");
+            api.StatusCodeShouldBe(HttpStatusCode.OK);
+        });
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var items = await result.ReadAsJsonAsync<List<GetCatalogItemsResponse>>();
+
         Assert.NotNull(items);
         Assert.Collection(
             items,
@@ -49,16 +54,45 @@ public sealed class CatalogOneTests(ScaffoldEnvironment environment)
         await dbContext.CatalogItems.AddAsync(catalogItem, TestContext.Current.CancellationToken);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        using var client = Environment.Host.Server.CreateClient();
-        using var response = await client.GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
-        var items = await response.Content.ReadFromJsonAsync<List<GetCatalogItemsResponse>>(TestContext.Current.CancellationToken);
+        var result = await Environment.Host.Scenario(api =>
+        {
+            api.As(CatalogReaderUser);
+            api.Get.Url("/api/catalog/items");
+            api.StatusCodeShouldBe(HttpStatusCode.OK);
+        });
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        var items = await result.ReadAsJsonAsync<List<GetCatalogItemsResponse>>();
+
         Assert.NotNull(items);
         Assert.Collection(
             items,
             item => Assert.Equal("Base Catalog Product", item.Name),
             item => Assert.Equal("Catalog One Product", item.Name),
             item => Assert.Equal("Catalog One Test Product", item.Name));
+    }
+
+    [Fact]
+    public async Task Get_catalog_items_requires_explicit_authorization_per_request()
+    {
+        await Environment.Host.Scenario(api =>
+        {
+            api.RemoveRequestHeader("Authorization");
+            api.Get.Url("/api/catalog/items");
+            api.StatusCodeShouldBe(HttpStatusCode.Unauthorized);
+        });
+
+        await Environment.Host.Scenario(api =>
+        {
+            api.As(new TestCurrentUser(roles: []));
+            api.Get.Url("/api/catalog/items");
+            api.StatusCodeShouldBe(HttpStatusCode.Forbidden);
+        });
+
+        await Environment.Host.Scenario(api =>
+        {
+            api.As(CatalogReaderUser);
+            api.Get.Url("/api/catalog/items");
+            api.StatusCodeShouldBe(HttpStatusCode.OK);
+        });
     }
 }

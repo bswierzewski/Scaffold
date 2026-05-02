@@ -1,5 +1,7 @@
 using Alba;
+using Alba.Security;
 using BuildingBlocks.Tests.Integration.Containers;
+using BuildingBlocks.Tests.Integration.Extensions;
 using BuildingBlocks.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,6 +14,7 @@ public class ScaffoldEnvironment : IAsyncLifetime
 {
     private readonly PostgresTestContainer _database = new();
     private readonly DatabaseRespawner _databaseRespawner = new();
+    private readonly JwtSecurityStub _jwtSecurity = new();
 
     public IAlbaHost Host { get; private set; } = default!;
 
@@ -26,7 +29,7 @@ public class ScaffoldEnvironment : IAsyncLifetime
         {
             builder.UseSetting("ConnectionStrings:Default", _database.ConnectionString);
             builder.ConfigureServices((_, services) => ConfigureTestServices(services));
-        });
+        }, _jwtSecurity);
 
         await _databaseRespawner.InitializeAsync(_database.ConnectionString);
     }

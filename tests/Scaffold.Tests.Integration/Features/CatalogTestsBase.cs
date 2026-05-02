@@ -1,4 +1,7 @@
+using BuildingBlocks.Core.Interfaces;
+using BuildingBlocks.Tests.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Scaffold.Modules.Catalog;
 using Scaffold.Modules.Catalog.Domain.Aggregates;
 using Scaffold.Modules.Catalog.Infrastructure.Persistence;
 using Scaffold.Tests.Integration.Shared;
@@ -9,6 +12,9 @@ namespace Scaffold.Tests.Integration.Features;
 public abstract class CatalogTestsBase(ScaffoldEnvironment environment) : IAsyncLifetime
 {
     protected ScaffoldEnvironment Environment { get; } = environment;
+    protected static ICurrentUser CatalogReaderUser { get; } = new TestCurrentUser(
+        roles: ["Catalog.Viewer"],
+        permissions: [CatalogPermissions.ReadItemsCode]);
 
     public virtual async ValueTask InitializeAsync()
     {
