@@ -44,7 +44,7 @@ builder.Services.AddOpenApi(options =>
 });
 
 // Add user identity services and authentication/authorization middleware with JWT bearer support.
-builder.Services.AddIdentity();
+builder.Services.AddIdentity(builder.Configuration);
 
 // Lists application modules explicitly so the bootstrapper can register their services
 // and expose their Wolverine handlers/endpoints.

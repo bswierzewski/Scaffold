@@ -1,7 +1,6 @@
 using Alba;
 using Alba.Security;
 using BuildingBlocks.Tests.Integration.Containers;
-using BuildingBlocks.Tests.Integration.Extensions;
 using BuildingBlocks.Tests.Shared;
 using Microsoft.Extensions.DependencyInjection;
 

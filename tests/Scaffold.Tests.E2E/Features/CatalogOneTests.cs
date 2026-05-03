@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using BuildingBlocks.Tests.E2E.Extensions;
+using BuildingBlocks.Tests.Models;
 using Scaffold.AppHost;
 using Scaffold.Modules.Catalog.Features.GetCatalogItems;
 using Scaffold.Modules.Catalog.Domain.Aggregates;
@@ -27,7 +28,9 @@ public sealed class CatalogOneTests(ScaffoldEnvironment environment)
     [Fact]
     public async Task Get_catalog_items_returns_shared_and_class_product()
     {
-        using var response = await Environment.GatewayHttpClient.GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+        using var response = await Environment.GatewayHttpClient
+            .As(CatalogReaderUser)
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
         var items = await response.Content.ReadFromJsonAsync<List<GetCatalogItemsResponse>>(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -47,7 +50,9 @@ public sealed class CatalogOneTests(ScaffoldEnvironment environment)
         await dbContext.CatalogItems.AddAsync(catalogItem, TestContext.Current.CancellationToken);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        using var response = await Environment.GatewayHttpClient.GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+        using var response = await Environment.GatewayHttpClient
+            .As(CatalogReaderUser)
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
         var items = await response.Content.ReadFromJsonAsync<List<GetCatalogItemsResponse>>(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -57,5 +62,26 @@ public sealed class CatalogOneTests(ScaffoldEnvironment environment)
             item => Assert.Equal("Base Catalog Product", item.Name),
             item => Assert.Equal("Catalog One Product", item.Name),
             item => Assert.Equal("Catalog One Test Product", item.Name));
+    }
+
+    [Fact]
+    public async Task Get_catalog_items_requires_explicit_authorization_per_request()
+    {
+        using var unauthorizedResponse = await Environment.GatewayHttpClient
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, unauthorizedResponse.StatusCode);
+
+        using var forbiddenResponse = await Environment.GatewayHttpClient
+            .As(new TestCurrentUser(roles: []))
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.Forbidden, forbiddenResponse.StatusCode);
+
+        using var authorizedResponse = await Environment.GatewayHttpClient
+            .As(CatalogReaderUser)
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+
+        Assert.Equal(HttpStatusCode.OK, authorizedResponse.StatusCode);
     }
 }

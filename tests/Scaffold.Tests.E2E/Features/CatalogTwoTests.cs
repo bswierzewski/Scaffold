@@ -27,7 +27,9 @@ public sealed class CatalogTwoTests(ScaffoldEnvironment environment)
     [Fact]
     public async Task Get_catalog_items_returns_shared_and_class_product()
     {
-        using var response = await Environment.GatewayHttpClient.GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+        using var response = await Environment.GatewayHttpClient
+            .As(CatalogReaderUser)
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
         var items = await response.Content.ReadFromJsonAsync<List<GetCatalogItemsResponse>>(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -47,7 +49,9 @@ public sealed class CatalogTwoTests(ScaffoldEnvironment environment)
         await dbContext.CatalogItems.AddAsync(catalogItem, TestContext.Current.CancellationToken);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        using var response = await Environment.GatewayHttpClient.GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
+        using var response = await Environment.GatewayHttpClient
+            .As(CatalogReaderUser)
+            .GetAsync("/api/catalog/items", TestContext.Current.CancellationToken);
         var items = await response.Content.ReadFromJsonAsync<List<GetCatalogItemsResponse>>(TestContext.Current.CancellationToken);
 
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
