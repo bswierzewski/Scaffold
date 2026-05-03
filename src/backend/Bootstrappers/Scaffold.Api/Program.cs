@@ -1,21 +1,23 @@
 using BuildingBlocks.Core.Interfaces;
 using BuildingBlocks.Hosting;
+using BuildingBlocks.Hosting.Enums;
+using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
 using BuildingBlocks.Infrastructure.Identity;
 using BuildingBlocks.Infrastructure.OpenApi;
-using BuildingBlocks.Infrastructure.Persistence.Extensions;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
+using Scaffold.Api;
 using Scalar.AspNetCore;
-using Scaffold.Modules.Catalog;
-using Scaffold.Modules.Notifications;
 
 var builder = WebApplication.CreateBuilder(args);
+var executionMode = builder.GetExecutionMode();
 
 // Adds Aspire defaults such as service discovery, health checks, telemetry wiring and resilient defaults
 // shared across distributed application services.
-builder.AddServiceDefaults();
+if (executionMode != ApplicationExecutionMode.OpenApi)
+    builder.AddServiceDefaults();
 
 // Replaces the default logging pipeline with Serilog and enables the sinks we want in this service:
 // file logs for local diagnostics, console logs for container/dev output, and OpenTelemetry export.
@@ -46,30 +48,14 @@ builder.Services.AddOpenApi(options =>
 // Add user identity services and authentication/authorization middleware with JWT bearer support.
 builder.Services.AddIdentity(builder.Configuration);
 
-// Lists application modules explicitly so the bootstrapper can register their services
-// and expose their Wolverine handlers/endpoints.
-IModule[] modules =
-[
-    new CatalogModule(),
-    new NotificationsModule()
-];
+builder.Services.ConfigureModules(builder.Configuration, out IModule[] modules);
 
-foreach (var module in modules)
-    builder.Services.AddSingleton(typeof(IModule), module);
-
-// Let each module register its container services explicitly at the composition root.
-foreach (var module in modules)
-    module.AddServices(builder.Services, builder.Configuration);
-
-var dataSource = builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
-
-builder.AddWolverine(modules, dataSource);
+builder.ConfigureWolverine(executionMode, modules);
 
 // Builds the DI container and the HTTP pipeline. After this point service registrations are closed.
 var app = builder.Build();
 
-foreach (var module in modules)
-    await module.InitializeAsync(app.Services);
+await app.InitializeModulesAsync(modules, executionMode);
 
 if (app.Environment.IsDevelopment())
 {
@@ -93,8 +79,7 @@ app.MapDefaultEndpoints();
 // Maps Wolverine HTTP endpoints with FluentValidation problem details middleware.
 app.MapModuleEndpoints();
 
-foreach (var module in modules)
-    await module.InitializeMigrationsAsync(app.Services);
+await app.RunMigrationsAsync(modules, executionMode);
 
 // Starts the web application and begins accepting requests.
 app.Run();
