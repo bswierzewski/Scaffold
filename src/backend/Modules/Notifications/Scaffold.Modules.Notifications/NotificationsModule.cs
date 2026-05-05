@@ -17,9 +17,4 @@ public sealed class NotificationsModule : IModule
         services.AddPostgres<NotificationsDbContext>(NotificationsDbContext.SchemaName);
         services.AddSingleton<IRolePermissionProvider, NotificationsRolePermissionProvider>();
     }
-
-    public async Task InitializeMigrationsAsync(IServiceProvider services, CancellationToken cancellationToken = default)
-    {
-        await services.MigrateDatabaseAsync<NotificationsDbContext>(cancellationToken);
-    }
 }

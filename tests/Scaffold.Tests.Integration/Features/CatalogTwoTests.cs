@@ -1,4 +1,5 @@
 using BuildingBlocks.Tests.Integration.Extensions;
+using BuildingBlocks.Tests.Integration.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Scaffold.Modules.Catalog.Domain.Aggregates;
 using Scaffold.Modules.Catalog.Features.GetCatalogItems;
@@ -9,14 +10,14 @@ using System.Net;
 namespace Scaffold.Tests.Integration.Features;
 
 [Collection(ScaffoldCollection.Name)]
-public sealed class CatalogTwoTests(ScaffoldEnvironment environment)
-    : CatalogTestsBase(environment)
+public sealed class CatalogTwoTests(DatabaseFixture databaseFixture)
+    : CatalogTestsBase(databaseFixture)
 {
-    public override async ValueTask InitializeAsync()
+    protected override async Task OnInitializeAsync(IServiceProvider services)
     {
-        await base.InitializeAsync();
+        await base.OnInitializeAsync(services);
 
-        using var scope = Environment.Host.Services.CreateScope();
+        using var scope = services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
 
         var catalogItem = CatalogItem.Create("Catalog Two Product", "catalog-two-01", 25.00m);
@@ -27,7 +28,7 @@ public sealed class CatalogTwoTests(ScaffoldEnvironment environment)
     [Fact]
     public async Task Get_catalog_items_returns_shared_and_class_product()
     {
-        var result = await Environment.Host.Scenario(api =>
+        var result = await Host.Scenario(api =>
         {
             api.As(CatalogReaderUser);
             api.Get.Url("/api/catalog/items");
@@ -46,14 +47,14 @@ public sealed class CatalogTwoTests(ScaffoldEnvironment environment)
     [Fact]
     public async Task Get_catalog_items_returns_shared_class_and_test_product()
     {
-        using var scope = Environment.Host.Services.CreateScope();
+        using var scope = Host.Services.CreateScope();
         using var dbContext = scope.ServiceProvider.GetRequiredService<CatalogDbContext>();
 
         var catalogItem = CatalogItem.Create("Catalog Two Test Product", "catalog-two-test-01", 35.00m);
         await dbContext.CatalogItems.AddAsync(catalogItem, TestContext.Current.CancellationToken);
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
 
-        var result = await Environment.Host.Scenario(api =>
+        var result = await Host.Scenario(api =>
         {
             api.As(CatalogReaderUser);
             api.Get.Url("/api/catalog/items");

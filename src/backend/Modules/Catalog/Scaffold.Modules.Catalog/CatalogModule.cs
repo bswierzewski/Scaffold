@@ -17,9 +17,4 @@ public sealed class CatalogModule : IModule
         services.AddPostgres<CatalogDbContext>(CatalogDbContext.SchemaName);
         services.AddSingleton<IRolePermissionProvider, CatalogRolePermissionProvider>();
     }
-
-    public async Task InitializeMigrationsAsync(IServiceProvider services, CancellationToken cancellationToken = default)
-    {
-        await services.MigrateDatabaseAsync<CatalogDbContext>(cancellationToken);
-    }
 }

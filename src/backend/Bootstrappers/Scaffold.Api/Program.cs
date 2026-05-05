@@ -4,7 +4,7 @@ using BuildingBlocks.Hosting.Enums;
 using BuildingBlocks.Hosting.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Extensions;
 using BuildingBlocks.Infrastructure.Exceptions.Handlers;
-using BuildingBlocks.Infrastructure.Identity;
+using BuildingBlocks.Infrastructure.Identity.Extensions;
 using BuildingBlocks.Infrastructure.OpenApi;
 using BuildingBlocks.Infrastructure.Serilog.Extensions;
 using BuildingBlocks.Infrastructure.Wolverine.Extensions;
@@ -50,7 +50,10 @@ builder.Services.AddIdentity(builder.Configuration);
 
 builder.Services.ConfigureModules(builder.Configuration, out IModule[] modules);
 
-builder.ConfigureWolverine(executionMode, modules);
+if (executionMode == ApplicationExecutionMode.OpenApi)
+    builder.ConfigureOpenApiWolverine(modules);
+else
+    builder.ConfigureWolverine(modules);
 
 // Builds the DI container and the HTTP pipeline. After this point service registrations are closed.
 var app = builder.Build();
@@ -79,7 +82,8 @@ app.MapDefaultEndpoints();
 // Maps Wolverine HTTP endpoints with FluentValidation problem details middleware.
 app.MapModuleEndpoints();
 
-await app.RunMigrationsAsync(modules, executionMode);
+if (executionMode != ApplicationExecutionMode.OpenApi)
+    await app.ApplyMigrations();
 
 // Starts the web application and begins accepting requests.
 app.Run();

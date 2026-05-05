@@ -5,7 +5,9 @@ using BuildingBlocks.Infrastructure.Wolverine.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Scaffold.Modules.Catalog;
+using Scaffold.Modules.Catalog.Infrastructure.Persistence;
 using Scaffold.Modules.Notifications;
+using Scaffold.Modules.Notifications.Infrastructure.Persistence;
 
 namespace Scaffold.Api;
 
@@ -15,19 +17,22 @@ namespace Scaffold.Api;
 public static class ModuleExtensions
 {
     /// <summary>
-    /// Configures Wolverine for the current execution mode, skipping database-backed messaging for OpenAPI generation.
+    /// Configures Wolverine for OpenAPI generation without database-backed messaging.
+    /// </summary>
+    public static void ConfigureOpenApiWolverine(
+        this WebApplicationBuilder builder,
+        IModule[] modules)
+    {
+        builder.AddWolverine(modules);
+    }
+
+    /// <summary>
+    /// Configures Wolverine with the shared PostgreSQL data source for runtime execution.
     /// </summary>
     public static void ConfigureWolverine(
         this WebApplicationBuilder builder,
-        ApplicationExecutionMode mode,
         IModule[] modules)
     {
-        if (mode == ApplicationExecutionMode.OpenApi)
-        {
-            builder.AddWolverine(modules);
-            return;
-        }
-
         var dataSource = builder.Services.AddPostgresDataSource(builder.Configuration, "Default");
         builder.AddWolverine(modules, dataSource);
     }
@@ -71,17 +76,17 @@ public static class ModuleExtensions
     }
 
     /// <summary>
-    /// Applies module migrations only when the host is running outside the metadata-only OpenAPI mode.
+    /// Applies owned module migrations explicitly during runtime startup.
     /// </summary>
-    public static async Task RunMigrationsAsync(
-        this WebApplication app,
-        IModule[] modules,
-        ApplicationExecutionMode mode)
+    public static async Task ApplyMigrations(this WebApplication app)
     {
-        if (mode == ApplicationExecutionMode.OpenApi)
-            return;
+        Func<IServiceProvider, CancellationToken, Task>[] migrations =
+        [
+            static (services, cancellationToken) => services.MigrateDatabaseAsync<CatalogDbContext>(cancellationToken),
+            static (services, cancellationToken) => services.MigrateDatabaseAsync<NotificationsDbContext>(cancellationToken)
+        ];
 
-        foreach (var module in modules)
-            await module.InitializeMigrationsAsync(app.Services);
+        foreach (var migration in migrations)
+            await migration(app.Services, CancellationToken.None);
     }
 }
