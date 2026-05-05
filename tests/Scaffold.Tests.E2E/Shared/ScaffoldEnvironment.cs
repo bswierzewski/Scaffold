@@ -1,5 +1,4 @@
 using Aspire.Hosting;
-using BuildingBlocks.Tests.Shared;
 using Scaffold.AppHost;
 
 namespace Scaffold.Tests.E2E.Shared;
@@ -9,8 +8,6 @@ namespace Scaffold.Tests.E2E.Shared;
 /// </summary>
 public sealed class ScaffoldEnvironment : IAsyncLifetime
 {
-    private readonly DatabaseRespawner _databaseRespawner = new();
-
     /// <summary>
     /// The started distributed application used by end-to-end tests.
     /// </summary>
@@ -20,8 +17,6 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
     /// HTTP client targeting the gateway resource.
     /// </summary>
     public HttpClient GatewayHttpClient { get; private set; } = default!;
-
-    // Lifecycle
 
     /// <summary>
     /// Builds and starts the distributed application used by this test collection.
@@ -42,8 +37,6 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
             .WaitAsync(TimeSpan.FromMinutes(3));
 
         GatewayHttpClient = App.CreateHttpClient(ResourceNames.Gateway, "https");
-
-        await _databaseRespawner.InitializeAsync(await App.GetConnectionStringAsync(ResourceNames.Database));
     }
 
     /// <summary>
@@ -54,15 +47,7 @@ public sealed class ScaffoldEnvironment : IAsyncLifetime
         if (GatewayHttpClient is not null)
             GatewayHttpClient.Dispose();
 
-        await _databaseRespawner.DisposeAsync();
-
         if (App is not null)
             await App.DisposeAsync();
     }
-
-    /// <summary>
-    /// Resets the database to a clean state while preserving the applied migration history.
-    /// </summary>
-    public Task ResetDatabaseAsync()
-        => _databaseRespawner.ResetAsync();
 }

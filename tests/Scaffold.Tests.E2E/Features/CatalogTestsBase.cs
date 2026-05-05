@@ -19,8 +19,6 @@ public abstract class CatalogTestsBase(ScaffoldEnvironment environment) : IAsync
 
     public virtual async ValueTask InitializeAsync()
     {
-        await Environment.ResetDatabaseAsync();
-
         await using var dbContext = await Environment.App.CreateDbContextAsync<CatalogDbContext>(ResourceNames.Database);
 
         var catalogItem = CatalogItem.Create("Base Catalog Product", "base-01", 10.00m);
@@ -28,5 +26,5 @@ public abstract class CatalogTestsBase(ScaffoldEnvironment environment) : IAsync
         await dbContext.SaveChangesAsync(TestContext.Current.CancellationToken);
     }
 
-    public ValueTask DisposeAsync() => new(Environment.ResetDatabaseAsync());
+    public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 }
